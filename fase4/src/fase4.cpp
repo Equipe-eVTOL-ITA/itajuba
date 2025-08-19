@@ -5,12 +5,32 @@
 #include "fsm/fsm.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include "drone/Drone.hpp"
-#include "vision_fase4.hpp"
+#include "fase4/vision_fase4.hpp"
 
 // Include all state headers
 #include "fase4/arming_state.hpp"
 #include "fase4/takeoff_state.hpp"
 #include "fase4/follow_lane_state.hpp"
+
+
+template<typename DoubleHandler, typename StringHandler>
+std::map<std::string, std::variant<double, std::string>> declareAndGetParameters(
+    const std::map<std::string, std::variant<double, std::string>>& defaults,
+    DoubleHandler&& double_handler,
+    StringHandler&& string_handler) {
+        
+    std::map<std::string, std::variant<double, std::string>> result;
+        
+    for (const auto& [name, default_value] : defaults) {
+        if (std::holds_alternative<double>(default_value)) {
+            result[name] = double_handler(name, std::get<double>(default_value));
+        } else if (std::holds_alternative<std::string>(default_value)) {
+            result[name] = string_handler(name, std::get<std::string>(default_value));
+        }
+    }
+    
+    return result;
+}
 
 class Fase4FSM : public fsm::FSM {
 public:
@@ -34,24 +54,24 @@ public:
 
         // Máquina de Estados
         this->add_state("ARMING", std::make_unique<ArmingState>());
-        this->add_state("INITIAL TAKEOFF", std::make_unique<InitialTakeoffState>());
+        this->add_state("INITIAL TAKEOFF", std::make_unique<TakeoffState>());
         this->add_state("FOLLOW_LANE", std::make_unique<FollowLaneState>());
         
         this->set_initial_state("ARMING");
 
         // Transições de Estados
-        this->add_transition("ARMING", {
+        this->add_transitions("ARMING", {
             {"ARMED", "INITIAL TAKEOFF"},
             {"NOT ARMED", "ERROR"},
             {"SEG FAULT", "ERROR"}
         });
 
-        this->add_transition("INITIAL TAKEOFF", {
+        this->add_transitions("INITIAL TAKEOFF", {
             {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
             {"TAKEOFF FAILED", "ERROR"}
         });
 
-        this->add_transition("FOLLOW_LANE", {
+        this->add_transitions("FOLLOW_LANE", {
             {"LANE_LOST", "ERROR"},
             {"LANE ENDED", "LANDING"}
         });
@@ -124,33 +144,7 @@ public:
             RCLCPP_ERROR(this->get_logger(), "FSM is not initialized or rclcpp is not ok.");
         }
     }
-
-private:
-    std::shared_ptr<Drone> drone_node_;
-    std::shared_ptr<VisionNode> vision_node_;
-    std::unique_ptr<Fase4FSM> fsm_;
-    rclcpp::TimerBase::SharedPtr timer_;
 };
-
-
-template<typename DoubleHandler, typename StringHandler>
-std::map<std::string, std::variant<double, std::string>> declareAndGetParameters(
-    const std::map<std::string, std::variant<double, std::string>>& defaults,
-    DoubleHandler&& double_handler,
-    StringHandler&& string_handler) {
-        
-    std::map<std::string, std::variant<double, std::string>> result;
-        
-    for (const auto& [name, default_value] : defaults) {
-        if (std::holds_alternative<double>(default_value)) {
-            result[name] = double_handler(name, std::get<double>(default_value));
-        } else if (std::holds_alternative<std::string>(default_value)) {
-            result[name] = string_handler(name, std::get<std::string>(default_value));
-        }
-    }
-    
-    return result;
-}
 
 int main(int argc, char** argv) {
     rclcpp::init(argc, argv);

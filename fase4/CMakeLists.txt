@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)           # ROS2 build system and CMake utilities
 find_package(fsm REQUIRED)                   # Finite State Machine library for mission control
 find_package(itajuba_drone_lib REQUIRED)     # Itajuba drone control library
+find_package(custom_msgs REQUIRED)           # Custom messages (LaneDirection)
 find_package(eigen3_cmake_module REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -33,6 +34,7 @@ ament_target_dependencies(fase4
   rclcpp
   fsm
   itajuba_drone_lib
+  custom_msgs
   Eigen3
   vision_msgs
   sensor_msgs
