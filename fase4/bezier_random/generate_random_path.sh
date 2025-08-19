@@ -4,10 +4,8 @@
 # Usado pelo simulate.sh do workspace frtl_2025_ws
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PX4_DIR="~/PX4-Autopilot"
-WORLDS_DIR="$PX4_DIR/Tools/simulation/gz/worlds"
-SCRIPTS_DIR="$PX4_DIR/Tools/simulation/gz/scripts"
-TEMP_PATH_FILE="$WORLDS_DIR/generated_path.sdf"
+WORKSPACE_DIR="${WORKSPACE_DIR:-$(dirname $(dirname $(dirname $SCRIPT_DIR)))}"
+TEMP_PATH_FILE="$SCRIPT_DIR/generated_path.sdf"
 
 # Função para gerar caminho
 generate_path() {
@@ -20,7 +18,7 @@ generate_path() {
     local initial_direction="$7"
     local direction_preference="$8"
 
-    echo "🎯 Gerando novo caminho para itajuba_fase4..."
+    echo "Gerando novo caminho para itajuba_fase4..."
 
     # Preparar argumentos opcionais
     local args=""
@@ -29,11 +27,10 @@ generate_path() {
     [ -n "$direction_preference" ] && args="$args --direction-preference $direction_preference"
 
     # Expandir ~ para o caminho completo
-    local expanded_scripts_dir="${SCRIPTS_DIR/#\~/$HOME}"
     local expanded_temp_file="${TEMP_PATH_FILE/#\~/$HOME}"
 
     # Gerar o caminho
-    python3 "$expanded_scripts_dir/generate_random_path.py" \
+    python3 "$SCRIPT_DIR/generate_random_path.py" \
         --length "$length" \
         --width "$width" \
         --segments "$segments" \
@@ -43,10 +40,10 @@ generate_path() {
         $args
 
     if [ $? -eq 0 ]; then
-        echo "✅ Caminho gerado com sucesso!"
+        echo "Caminho gerado com sucesso!"
         return 0
     else
-        echo "❌ Erro ao gerar caminho!"
+        echo "Erro ao gerar caminho!"
         return 1
     fi
 }
@@ -54,7 +51,7 @@ generate_path() {
 # Função para prompt interativo
 interactive_path_generation() {
     echo ""
-    echo "🛤️  Configuração de Caminho para itajuba_fase4"
+    echo "Configuração de Caminho para itajuba_fase4"
     echo "=============================================="
 
     # Perguntar se quer gerar novo caminho
@@ -139,13 +136,13 @@ interactive_path_generation() {
         echo ""
         if generate_path "$length" "$width" "5" "1.5" "$color" "$seed" "$initial_direction" "$direction_preference"; then
             echo ""
-            echo "🎉 Caminho configurado! Iniciando simulação..."
+            echo "Caminho configurado! Iniciando simulação..."
         else
             echo ""
-            echo "⚠️  Erro na geração. Continuando com caminho existente..."
+            echo "Erro na geração. Continuando com caminho existente..."
         fi
     else
-        echo "📁 Usando caminho existente (se houver)..."
+        echo "Usando caminho existente (se houver)..."
     fi
 
     echo ""
