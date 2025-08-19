@@ -17,9 +17,9 @@ public:
 
 
     void on_enter(fsm::Blackboard &bb) override {
-        if(this->drone == nullptr) return;
-        
         this->drone = *bb.get<std::shared_ptr<Drone>>("drone");
+        
+        if(this->drone == nullptr) return;
         
         this->drone->log("STATE: TAKEOFF");
 

@@ -10,16 +10,32 @@
 // Include all state headers
 #include "fase4/arming_state.hpp"
 #include "fase4/takeoff_state.hpp"
+#include "fase4/follow_lane_state.hpp"
 
 class Fase4FSM : public fsm::FSM {
 public:
-    Fase4FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision) : fsm::FSM({"ERROR", "FINISHED"}){
+    Fase4FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision, const std::map<std::string, std::variant<double, std::string>>& parameters) : fsm::FSM({"ERROR", "FINISHED"}){
         this->blackboard_set<std::shared_ptr<Drone>>("drone", drone);
         this->blackboard_set<std::shared_ptr<VisionNode>>("vision", vision);
+        
+        auto blackboard_params = declareAndGetParameters(
+            parameters,
+            // Lambda para converter double para float e armazenar no blackboard
+            [this](const std::string& name, double value) -> double {
+                this->blackboard_set<float>(name, static_cast<float>(value));
+                return value; // Retorno não é usado, mas necessário para a interface
+            },
+            // Lambda para armazenar strings no blackboard
+            [this](const std::string& name, const std::string& value) -> std::string {
+                this->blackboard_set<std::string>(name, value);
+                return value; // Retorno não é usado, mas necessário para a interface
+            }
+        );
 
         // Máquina de Estados
         this->add_state("ARMING", std::make_unique<ArmingState>());
         this->add_state("INITIAL TAKEOFF", std::make_unique<InitialTakeoffState>());
+        this->add_state("FOLLOW_LANE", std::make_unique<FollowLaneState>());
         
         this->set_initial_state("ARMING");
 
@@ -28,6 +44,16 @@ public:
             {"ARMED", "INITIAL TAKEOFF"},
             {"NOT ARMED", "ERROR"},
             {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transition("INITIAL TAKEOFF", {
+            {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
+            {"TAKEOFF FAILED", "ERROR"}
+        });
+
+        this->add_transition("FOLLOW_LANE", {
+            {"LANE_LOST", "ERROR"},
+            {"LANE ENDED", "LANDING"}
         });
 
     }
@@ -54,11 +80,18 @@ public:
             {"pid_pos_kp", 0.5},
             {"pid_pos_ki", 0.0},
             {"pid_pos_kd", 0.1},
-            {"setpoint", 0.0}
+            {"setpoint", 0.0},
+            // PID parameters for lateral control (X position alignment - normalized coordinates)
+            {"pid_lateral_kp", 0.5},   // Maior para coordenadas normalizadas (-1 a +1)
+            {"pid_lateral_ki", 0.01},  // Ajustado para nova escala
+            {"pid_lateral_kd", 0.1},   // Ajustado para nova escala
+            // PID parameters for angular control (theta alignment)
+            {"pid_angular_kp", 0.5},   // Proporcional para correção angular
+            {"pid_angular_ki", 0.01},  // Integral para correção angular
+            {"pid_angular_kd", 0.1}    // Derivativo para correção angular
         };
 
-        fsm_ = std::make_unique<Fase4FSM>(drone_node_, vision_node_);
-        
+        // Create and configure FSM with parameters
         auto parameters = declareAndGetParameters(
             defaults,
             // Lambda para lidar com parâmetros do tipo double - captura this
@@ -72,9 +105,10 @@ public:
                 return this->get_parameter(name).as_string();
             }
         );
+
+        fsm_ = std::make_unique<Fase4FSM>(drone_node_, vision_node_, parameters);
         
-        // Isso permite fazer:
-        // double takeoff_height = std::get<double>(parameters["takeoff_height"]);
+        // Agora os parâmetros estão disponíveis no blackboard para os estados
         
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(50),
