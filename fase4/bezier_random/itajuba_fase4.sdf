@@ -1,0 +1,275 @@
+<?xml version="1.0" ?>
+<sdf version="1.10">
+  <world name="itajuba_fase4">
+
+    <!-- Configurações básicas do mundo -->
+    <physics name="1ms" type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+
+    <!-- Plugin para visualização -->
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+
+    <!-- Iluminação -->
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <!-- Chão/Terreno -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.3 0.5 0.3 1</ambient>
+            <diffuse>0.3 0.5 0.3 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Atmosfera e céu -->
+    <atmosphere type="adiabatic">
+      <temperature>288.15</temperature>
+      <pressure>101325</pressure>
+      <temperature_gradient>-0.0065</temperature_gradient>
+    </atmosphere>
+
+    <!-- Configurações da câmera da GUI -->
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose angle_format="degree">-6 0 6 0 15 0</pose>
+        <view_controller>orbit</view_controller>
+        <projection_type>perspective</projection_type>
+      </camera>
+    </gui>
+
+    <!-- Modelos específicos do Itajubá Fase 4 -->
+
+    <!-- Marco de referência central -->
+    <model name="central_marker">
+      <pose>0 0 0.1 0 0 0</pose>
+      <static>true</static>
+      <link name="marker_link">
+        <visual name="marker_visual">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.2</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1 0 0 1</ambient>
+            <diffuse>1 0 0 1</diffuse>
+            <specular>0.5 0.5 0.5 1</specular>
+          </material>
+        </visual>
+        <collision name="marker_collision">
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.2</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Área de pouso -->
+    <model name="landing_pad">
+      <pose>10 10 0.01 0 0 0</pose>
+      <static>true</static>
+      <link name="pad_link">
+        <visual name="pad_visual">
+          <geometry>
+            <cylinder>
+              <radius>2.0</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>1 1 0 1</ambient>
+            <diffuse>1 1 0 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+          </material>
+        </visual>
+        <collision name="pad_collision">
+          <geometry>
+            <cylinder>
+              <radius>2.0</radius>
+              <length>0.02</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Obstáculos para navegação -->
+    <model name="obstacle_1">
+      <pose>5 5 1 0 0 0</pose>
+      <static>true</static>
+      <link name="obs_link">
+        <visual name="obs_visual">
+          <geometry>
+            <box>
+              <size>1 1 2</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.8 0.8 0.8 1</ambient>
+            <diffuse>0.8 0.8 0.8 1</diffuse>
+          </material>
+        </visual>
+        <collision name="obs_collision">
+          <geometry>
+            <box>
+              <size>1 1 2</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="obstacle_2">
+      <pose>-8 3 0.5 0 0 0.785</pose>
+      <static>true</static>
+      <link name="obs_link2">
+        <visual name="obs_visual2">
+          <geometry>
+            <box>
+              <size>2 0.5 1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.6 0.4 0.2 1</diffuse>
+          </material>
+        </visual>
+        <collision name="obs_collision2">
+          <geometry>
+            <box>
+              <size>2 0.5 1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Torres de referência -->
+    <model name="tower_north">
+      <pose>0 15 2.5 0 0 0</pose>
+      <static>true</static>
+      <link name="tower_link">
+        <visual name="tower_visual">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>5</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0 0 1 1</ambient>
+            <diffuse>0 0 1 1</diffuse>
+          </material>
+        </visual>
+        <collision name="tower_collision">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>5</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="tower_south">
+      <pose>0 -15 2.5 0 0 0</pose>
+      <static>true</static>
+      <link name="tower_link_s">
+        <visual name="tower_visual_s">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>5</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0 1 0 1</ambient>
+            <diffuse>0 1 0 1</diffuse>
+          </material>
+        </visual>
+        <collision name="tower_collision_s">
+          <geometry>
+            <cylinder>
+              <radius>0.2</radius>
+              <length>5</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- Área específica para projeto Itajubá -->
+    <model name="itajuba_test_area">
+      <pose>-10 -10 0.05 0 0 0</pose>
+      <static>true</static>
+      <link name="test_area_link">
+        <visual name="test_area_visual">
+          <geometry>
+            <box>
+              <size>8 8 0.1</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.8 0.2 1</ambient>
+            <diffuse>0.2 0.8 0.2 1</diffuse>
+            <specular>0.1 0.1 0.1 1</specular>
+          </material>
+        </visual>
+        <collision name="test_area_collision">
+          <geometry>
+            <box>
+              <size>8 8 0.1</size>
+            </box>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+  </world>
+</sdf>
