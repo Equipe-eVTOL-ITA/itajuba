@@ -1,11 +1,8 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
-#include <vision_msgs/msg/detection2_d_array.hpp>
-#include <visualization_msgs/msg/marker.hpp>
-#include <visualization_msgs/msg/marker_array.hpp>
-#include <custom_msgs/msg/base_detection.hpp>
 #include <sensor_msgs/msg/image.hpp>
+#include <custom_msgs/msg/lane_direction.hpp>
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/core.hpp>
 #include <Eigen/Eigen>
@@ -13,16 +10,14 @@
 #include <string>
 #include <memory>
 #include <chrono>
-#include "Base.hpp"
 
-struct BoundingBox {
-    float center_x;
-    float center_y;
-    float width;
-    float height;
-    float confidence;
-    std::string class_id;
-    int64_t timestamp;
+typedef custom_msgs::msg::LaneDirection LaneDirectionMsg;
+
+struct LaneData {
+    float theta;           // Ângulo da faixa (em radianos)
+    int32_t x_centroid;    // Centro X da faixa (pixels)
+    int32_t y_centroid;    // Centro Y da faixa (pixels)
+    int64_t timestamp;     // Timestamp da detecção
 };
 
 class VisionNode : public rclcpp::Node {
@@ -33,130 +28,78 @@ public:
         vision_qos.best_effort();
         vision_qos.durability(rclcpp::DurabilityPolicy::Volatile);
 
-        this->declare_parameter<double>("timeout", 10.0);
+        // Parâmetro de timeout
+        this->declare_parameter<double>("timeout", 5.0);
         timeout_ = std::chrono::duration<double>(this->get_parameter("timeout").as_double());
-        
-        detections_sub_ = this->create_subscription<vision_msgs::msg::Detection2DArray>(
-            "/vertical_camera/classification",
+
+        // Subscriber para dados de lane detection
+        lane_sub_ = this->create_subscription<LaneDirectionMsg>(
+            "lane_detection",
             vision_qos,
-            [this](const vision_msgs::msg::Detection2DArray::SharedPtr msg) {
-                detections_.clear();
-                this->detection_last_update_ = std::chrono::steady_clock::now();
-
-                if(msg->detections.empty()){
-                    this->is_there_detection_ = false;
-                    return;
-                }
-
-                this->is_there_detection_ = true;
-                this->valid_detection_last_update_ = std::chrono::steady_clock::now();
-
-                for (const auto& detection : msg->detections) {
-                    BoundingBox bbox;
-                    bbox.center_x = detection.bbox.center.position.x;
-                    bbox.center_y = detection.bbox.center.position.y;
-                    bbox.width = detection.bbox.size_x;
-                    bbox.height = detection.bbox.size_y;
-                    bbox.confidence = detection.results[0].hypothesis.score;
-                    bbox.class_id = detection.results[0].hypothesis.class_id;
-                    bbox.timestamp = msg->header.stamp.sec * 1000000000LL + msg->header.stamp.nanosec;
-                    
-                    detections_.push_back(bbox);
-                }
-
-                this->computeBboxes();
+            [this](const LaneDirectionMsg::SharedPtr msg) { // callback para detecção de faixa
+                this->lane_detection_callback(msg);
             }
         );
 
-        base_detection_pub_ = this->create_publisher<custom_msgs::msg::BaseDetection>("/telemetry/bases", 10);
-        
-        std::string timeout_str = std::to_string(timeout_.count());
-        RCLCPP_INFO(this->get_logger(), "Vision node initialized successfully, timeout: %s seconds", timeout_str.c_str());
-        RCLCPP_INFO(this->get_logger(), "Vision node initialized successfully");
-
+        RCLCPP_INFO(this->get_logger(), "Lane Vision Node initialized successfully");
     }
 
-    double lastDetectionTime() {
+    // Métodos públicos para acessar os dados da faixa
+    bool isLaneDetected() {
+        double time_since_last = this->getLastDetectionTime();
+        return has_lane_detection_ && (time_since_last <= timeout_.count());
+    }
+
+    LaneData getCurrentLaneData() {
+        return current_lane_data_;
+    }
+
+    double getLastDetectionTime() {
         auto now = std::chrono::steady_clock::now();
-        return std::chrono::duration<double>(now - detection_last_update_).count();
+        return std::chrono::duration<double>(now - last_detection_time_).count();
     }
 
-    double lastBaseDetectionTime() {
-        auto now = std::chrono::steady_clock::now();
-        return std::chrono::duration<double>(now - valid_detection_last_update_).count();
+    // Retorna o ângulo da faixa em radianos
+    float getLaneAngle() {
+        return current_lane_data_.theta;
     }
 
-    BoundingBox getClosestBbox(){
-        return this->closest_bbox_;
-    }
-    
-    float getMinDistance(){
-        return this->min_distance_;
-    }
-
-    bool isThereDetection(){
-        if (this->lastDetectionTime() > this->timeout_.count())
-            return false;
-        return this->is_there_detection_;
-    }
-
-    std::vector<BoundingBox> getDetections() {
-        return this->detections_;
-    }
-
-    void publishBaseDetection(const std::string& base_type,
-                            const Eigen::Vector2d& position,
-                            float mean_base_height = -0.1,
-                            float confidence = 1.0f,
-                            uint32_t detection_id = 0) 
-    {
-        auto msg = custom_msgs::msg::BaseDetection();
-        msg.header.stamp = this->get_clock()->now();
-        msg.position.x = position.x();
-        msg.position.y = position.y(); 
-        msg.position.z = mean_base_height;
-        msg.base_type = base_type;
-        msg.confidence = confidence;
-        msg.detection_id = detection_id;
-        
-        base_detection_pub_->publish(msg);
+    // Retorna o centro da faixa em pixels
+    Eigen::Vector2i getLaneCentroid() {
+        return Eigen::Vector2i(current_lane_data_.x_centroid, current_lane_data_.y_centroid);
     }
 
 private:
-    rclcpp::Subscription<vision_msgs::msg::Detection2DArray>::SharedPtr detections_sub_;
-    std::vector<BoundingBox> detections_;    
-    std::chrono::steady_clock::time_point detection_last_update_;
-    std::chrono::steady_clock::time_point valid_detection_last_update_;
-    std::chrono::duration<double> timeout_{10.0};
+    // ROS2 subscription
+    rclcpp::Subscription<LaneDirectionMsg>::SharedPtr lane_sub_;
 
-    bool is_there_detection_{false};
-    BoundingBox closest_bbox_;
-    float min_distance_{0.0f};
+    // Estado da detecção
+    LaneData current_lane_data_;
+    bool has_lane_detection_{false};
+    std::chrono::steady_clock::time_point last_detection_time_;
+    std::chrono::duration<double> timeout_{5.0};
 
-    rclcpp::Publisher<visualization_msgs::msg::MarkerArray>::SharedPtr marker_pub_;
-    rclcpp::Publisher<custom_msgs::msg::BaseDetection>::SharedPtr base_detection_pub_;
+    void lane_detection_callback(const LaneDirectionMsg::SharedPtr msg) {
+        // Atualiza timestamp
+        last_detection_time_ = std::chrono::steady_clock::now();
 
-
-    void computeBboxes(){
-        Eigen::Vector2d image_center = Eigen::Vector2d({0.5, 0.5});
-
-        if (this->detections_.empty()) {
-            this->is_there_detection_ = false;
+        // Verifica se há detecção válida
+        if (msg->x_centroid == 0 && msg->y_centroid == 0 && msg->theta == 0.0f) {
+            has_lane_detection_ = false;
+            RCLCPP_DEBUG(this->get_logger(), "No lane detected");
             return;
         }
 
-        this->is_there_detection_ = true;
-        float min_distance = 2.0f;
-        BoundingBox closest_bbox;
-
-        for (const auto& bbox : this->detections_) {
-            double distance = (Eigen::Vector2d(bbox.center_x, bbox.center_y) - image_center).norm();
-            if (distance < min_distance) {
-                min_distance = distance;
-                closest_bbox = bbox;
-            }                    
-        }
-        this->closest_bbox_ = closest_bbox;
-        this->min_distance_ = min_distance;
-    }    
+        // Armazena dados da faixa
+        current_lane_data_.theta = msg->theta;
+        current_lane_data_.x_centroid = msg->x_centroid;
+        current_lane_data_.y_centroid = msg->y_centroid;
+        current_lane_data_.timestamp = this->get_clock()->now().nanoseconds();
+        
+        has_lane_detection_ = true;
+        
+        RCLCPP_DEBUG(this->get_logger(), 
+                    "Lane detected - Theta: %.3f, Center: (%d, %d)", 
+                    msg->theta, msg->x_centroid, msg->y_centroid);
+    }
 };

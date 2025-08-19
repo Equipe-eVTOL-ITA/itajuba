@@ -3,18 +3,19 @@ from rclpy.node import Node
 from std_msgs.msg import UInt8
 from sensor_msgs.msg import CompressedImage
 from geometry_msgs.msg import Point
+from custom_msgs.msg import LaneDirection
 
 import cv2
 import numpy as np
 import math
-from cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge
 
 class LaneDetector(Node):
 	def __init__(self):
 		super().__init__('lane_detector')
 
-		self._centroid_publisher = self.create_publisher(Point, 'centroid', 10)
-		self._threshold_publisher = self.create_publisher(UInt8, 'threshold', 10)
+		self._publisher = self.create_publisher(LaneDirection, 'lane_detection', 10)
+
 		self._subscriber = self.create_subscription(
 			CompressedImage,
 			'camera/compressed',
@@ -22,9 +23,6 @@ class LaneDetector(Node):
 			10
 		)
 		self.bridge = CvBridge()
-
-		self.threshold: UInt8 = UInt8()
-		self.threshold.data = int(8) # valor do threshold
 	
 	def lane_detection_callback(self, msg):
 		np_arr = np.frombuffer(msg.data, np.uint8)
@@ -33,6 +31,11 @@ class LaneDetector(Node):
 		if cv_image is None:
 			self.get_logger().error('Failed to decode compressed color image.')
 			return
+
+		# Inicializar variáveis com valores padrão
+		theta = 0.0
+		cx = 0
+		cy = 0
 
 		hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
 
@@ -80,11 +83,26 @@ class LaneDetector(Node):
 						int(cy + tamanho*math.sin(theta))
 					)
 					cv2.arrowedLine(output_image, start_point, end_point, (0, 0, 255), 3)
+				else:
+					self.get_logger().warn('Contorno detectado mas momento zero é inválido')
+			else:
+				self.get_logger().debug(f'Contorno muito pequeno: área = {area}')
 
+		# Publicar sempre, mesmo que não haja detecção válida
+		lane_msg = LaneDirection()
+		lane_msg.theta = float(theta)
+		lane_msg.x_centroid = int(cx)
+		lane_msg.y_centroid = int(cy)
+		
+		self._publisher.publish(lane_msg)
+
+		# Opcional: mostrar imagens para debug (descomente se necessário)
+		# self.show_image(binary_mask, output_image)
+
+	def show_image(self, binary_mask, output_image):
 		#cv2.imshow('mascara', binary_mask)
 		cv2.imshow('Lane Detection', output_image)
 		cv2.waitKey(1)
-
 
 
 def main(args=None):
