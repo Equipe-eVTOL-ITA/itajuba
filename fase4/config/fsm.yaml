@@ -1,0 +1,31 @@
+fase4_fsm:
+  ros__parameters:
+    fictual_home_x: 1.0
+    fictual_home_y: -1.0
+    fictual_home_z: -0.6 # Remember z points Down
+
+    takeoff_height: -3.0
+
+    max_vertical_velocity: 1.0
+    max_horizontal_velocity: 1.0
+    descent_velocity: 0.15
+    landing_velocity: 0.5 # Positive value
+
+    landing_timeout: 7.0
+
+    position_tolerance: 0.07
+
+    pid_pos_kp: 1.0
+    pid_pos_ki: 0.01
+    pid_pos_kd: 0.05
+    setpoint_pos: 0.0
+
+    pid_yaw_kp: 1.0
+    pid_yaw_ki: 0.01
+    pid_yaw_kd: 0.05
+    setpoint_yaw: 0.0
+    # -------------------------------------
+
+fase4_vision:
+  ros__parameters:
+    timeout: 10.0
