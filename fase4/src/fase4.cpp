@@ -96,19 +96,17 @@ public:
             {"max_vertical_velocity", 0.5},
             {"max_horizontal_velocity", 1.0},
             {"position_tolerance", 0.1},
-            {"takeoff_height", 1.5},
+            {"takeoff_height", -1.5},
             {"pid_pos_kp", 0.5},
             {"pid_pos_ki", 0.0},
             {"pid_pos_kd", 0.1},
             {"setpoint", 0.0},
-            // PID parameters for lateral control (X position alignment - normalized coordinates)
-            {"pid_lateral_kp", 0.5},   // Maior para coordenadas normalizadas (-1 a +1)
-            {"pid_lateral_ki", 0.01},  // Ajustado para nova escala
-            {"pid_lateral_kd", 0.1},   // Ajustado para nova escala
-            // PID parameters for angular control (theta alignment)
-            {"pid_angular_kp", 0.5},   // Proporcional para correção angular
-            {"pid_angular_ki", 0.01},  // Integral para correção angular
-            {"pid_angular_kd", 0.1}    // Derivativo para correção angular
+            {"pid_lateral_kp", 0.5},
+            {"pid_lateral_ki", 0.01},
+            {"pid_lateral_kd", 0.1},
+            {"pid_angular_kp", 0.5},
+            {"pid_angular_ki", 0.01},
+            {"pid_angular_kd", 0.1}
         };
 
         // Create and configure FSM with parameters
@@ -137,23 +135,27 @@ public:
     }
 
     void executeFSM(){
-        if(rclcpp::ok() && !fsm_->is_finished()) {
-            RCLCPP_INFO(this->get_logger(), "Executing FSM...");
+        if(rclcpp::ok() && !fsm_->is_finished())
             fsm_->execute();
-        } else {
-            RCLCPP_ERROR(this->get_logger(), "FSM is not initialized or rclcpp is not ok.");
-        }
+        else
+            rclcpp::shutdown();
     }
 };
 
 int main(int argc, char** argv) {
-    rclcpp::init(argc, argv);
-    
+    rclcpp::init(argc, argv);    
+    rclcpp::executors::MultiThreadedExecutor executor;
+
     auto drone = std::make_shared<Drone>();
     auto vision = std::make_shared<VisionNode>();
-    auto node = std::make_shared<NodeFSM>(drone, vision);
+    auto fsm_node = std::make_shared<NodeFSM>(drone, vision);
+
+    executor.add_node(fsm_node);
+    executor.add_node(drone);
+    executor.add_node(vision);
+
+    executor.spin();
     
-    rclcpp::spin(node);
     rclcpp::shutdown();
     
     return 0;

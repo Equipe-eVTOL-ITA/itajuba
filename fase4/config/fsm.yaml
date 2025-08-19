@@ -1,34 +1,34 @@
 fase4_fsm:
   ros__parameters:
-    # Home position parameters (used in arming_state.hpp)
+    # Home position parameter
     fictual_home_x: 0.0
     fictual_home_y: 0.0
     fictual_home_z: 0.0 # Remember z points Down
 
-    # Takeoff parameters (used in takeoff_state.hpp)
-    takeoff_height: 1.5 # Positive for upward movement
+    # Takeoff parameters
+    takeoff_height: -1.5
     max_vertical_velocity: 0.5
     
-    # Lane following parameters (used in follow_lane_state.hpp)
+    # Lane following parameters
     max_horizontal_velocity: 1.0
     position_tolerance: 0.1
 
-    # Legacy PID parameters (if still used elsewhere)
+    # PID parameters for positioning
     pid_pos_kp: 0.5
     pid_pos_ki: 0.0
     pid_pos_kd: 0.1
     setpoint: 0.0
 
-    # Lane following PID - Lateral control (X position alignment)
-    # For normalized coordinates (-1 to +1 range)
-    pid_lateral_kp: 0.5   # Higher values for normalized coords
-    pid_lateral_ki: 0.01  # Adjusted for new scale
-    pid_lateral_kd: 0.1   # Adjusted for new scale
-    
-    # Lane following PID - Angular control (theta alignment)  
-    pid_angular_kp: 0.5   # Proportional for angular correction
-    pid_angular_ki: 0.01  # Integral for angular correction
-    pid_angular_kd: 0.1   # Derivative for angular correction
+    # Lane following PID - Controle lateral (alinhamento em X)
+    # Coordenadas normalizadas(um range de -1 até +1)
+    pid_lateral_kp: 0.5
+    pid_lateral_ki: 0.01
+    pid_lateral_kd: 0.1 
+
+    # Lane following PID - Controle angular (alinhamento em theta)
+    pid_angular_kp: 0.5
+    pid_angular_ki: 0.01
+    pid_angular_kd: 0.1
 
 fase4_vision:
   ros__parameters:

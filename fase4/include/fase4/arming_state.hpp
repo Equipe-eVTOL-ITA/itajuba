@@ -27,17 +27,18 @@ public:
         this->drone->armSync();
         this->drone->setHomePosition(fictual_home);
     }
-
+    
     std::string act(fsm::Blackboard &bb) override {
         (void)bb;
-
+        
         // Check if the drone is armed
+        this->drone->log("Checking everything before flight...");
         if (this->drone->getArmingState() == DronePX4::ARMING_STATE::ARMED) {
             this->drone->log("Drone armed successfully.");
             return "ARMED";
-        } else {
-            this->drone->log("Failed to arm the drone.");
-            return "NOT ARMED";
         }
+
+        this->drone->log("Failed to arm the drone.");
+        return "NOT ARMED";
     }
 };
