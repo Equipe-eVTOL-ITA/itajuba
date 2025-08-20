@@ -123,7 +123,7 @@ def generate_smooth_path(start_pos=np.array([0, 0, 0]),
 
     return all_points
 
-def create_path_sdf(points, width=0.3, color=[0, 0, 1, 1], model_name="random_path"):
+def create_path_sdf(points, width=0.3, color=[0, 0, 1, 1], model_name="generated_path"):
     """Cria um arquivo SDF com o caminho gerado"""
 
     sdf_content = f"""<?xml version="1.0" ?>
@@ -223,7 +223,7 @@ def main():
         points=points,
         width=args.width,
         color=args.color,
-        model_name="random_path"
+        model_name="generated_path"
     )
 
     # Salvar arquivo

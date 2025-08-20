@@ -14,7 +14,7 @@
 
 
 template<typename DoubleHandler, typename StringHandler>
-std::map<std::string, std::variant<double, std::string>> declareAndGetParameters(
+std::map<std::string, std::variant<double, std::string>> actOnBlackboardMap(
     const std::map<std::string, std::variant<double, std::string>>& defaults,
     DoubleHandler&& double_handler,
     StringHandler&& string_handler) {
@@ -38,17 +38,18 @@ public:
         this->blackboard_set<std::shared_ptr<Drone>>("drone", drone);
         this->blackboard_set<std::shared_ptr<VisionNode>>("vision", vision);
         
-        auto blackboard_params = declareAndGetParameters(
+        // Armazenar parâmetros diretamente no blackboard (já processados do YAML)
+        actOnBlackboardMap(
             parameters,
             // Lambda para converter double para float e armazenar no blackboard
             [this](const std::string& name, double value) -> double {
                 this->blackboard_set<float>(name, static_cast<float>(value));
-                return value; // Retorno não é usado, mas necessário para a interface
+                return value;
             },
             // Lambda para armazenar strings no blackboard
             [this](const std::string& name, const std::string& value) -> std::string {
                 this->blackboard_set<std::string>(name, value);
-                return value; // Retorno não é usado, mas necessário para a interface
+                return value;
             }
         );
 
@@ -94,23 +95,23 @@ public:
             {"fictual_home_y", 0.0},
             {"fictual_home_z", 0.0},
             {"max_vertical_velocity", 0.5},
-            {"max_horizontal_velocity", 1.0},
+            {"max_horizontal_velocity", 0.1},
             {"position_tolerance", 0.1},
             {"takeoff_height", -1.5},
-            {"pid_pos_kp", 0.5},
+            {"pid_pos_kp", 1.0},
             {"pid_pos_ki", 0.0},
-            {"pid_pos_kd", 0.1},
+            {"pid_pos_kd", 0.0},
             {"setpoint", 0.0},
             {"pid_lateral_kp", 0.5},
-            {"pid_lateral_ki", 0.01},
-            {"pid_lateral_kd", 0.1},
+            {"pid_lateral_ki", 0.0},
+            {"pid_lateral_kd", 0.0},
             {"pid_angular_kp", 0.5},
             {"pid_angular_ki", 0.01},
             {"pid_angular_kd", 0.1}
         };
 
         // Create and configure FSM with parameters
-        auto parameters = declareAndGetParameters(
+        auto parameters = actOnBlackboardMap(
             defaults,
             // Lambda para lidar com parâmetros do tipo double - captura this
             [this](const std::string& name, double default_value) -> double {

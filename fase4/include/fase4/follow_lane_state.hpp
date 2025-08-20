@@ -20,7 +20,6 @@ private:
     float max_velocity;
     float position_tolerance;
     float height;
-    float forward_velocity; // Velocidade constante para frente
     
     // Setpoints para controle (coordenadas normalizadas)
     static constexpr float TARGET_X_NORMALIZED = 0.0f;  // Centro da imagem (0 = centro)
@@ -73,6 +72,14 @@ public:
             TARGET_THETA
         );
 
+        // LOGS DE DEBUG PARA VERIFICAR PARÂMETROS
+        this->drone->log("PID LATERAL - Kp: " + std::to_string(kp_lateral) + 
+                        ", Ki: " + std::to_string(ki_lateral) + 
+                        ", Kd: " + std::to_string(kd_lateral));
+        this->drone->log("PID ANGULAR - Kp: " + std::to_string(kp_angular) + 
+                        ", Ki: " + std::to_string(ki_angular) + 
+                        ", Kd: " + std::to_string(kd_angular));
+
         this->drone->log("FollowLaneState initialized with PID controllers");
     }
 
@@ -95,7 +102,7 @@ public:
         // Converter coordenadas normalizadas de volta para float
         // (foram multiplicadas por 1000 no Python para manter precisão como int)
         float x_centroid_normalized = static_cast<float>(x_centroid_scaled) / 1000.0f;
-        
+
         // Calcular correções usando PIDs (agora com coordenadas normalizadas)
         float lateral_correction = this->lateral_pid->compute(x_centroid_normalized);
         float angular_correction = this->angular_pid->compute(theta);
@@ -103,25 +110,23 @@ public:
         // Normalizar correções para limites de velocidade
         lateral_correction = std::clamp(lateral_correction, -this->max_velocity, this->max_velocity);
         angular_correction = std::clamp(angular_correction, -1.0f, 1.0f); // rad/s
+
+        // IMPLEMENTAÇÃO SIMPLES: Movimento básico sem complexidades
+        float vx = this->max_velocity;          // Sempre para frente (velocidade constante)
+        float vy = -lateral_correction * 0.5f;  // Correção lateral suave (reduzida pela metade)
+        float vz = 0.0f;                       // Manter altitude
+        float yaw_rate = angular_correction * 0.3f;  // Correção angular muito suave
         
-        // Comandar velocidades:
-        // vx: movimento para frente (constante)
-        // vy: correção lateral (baseada no erro de posição X normalizada)
-        // vz: manter altitude (0 para manter altura atual)
-        // yaw_rate: correção angular (baseada no erro de theta)
-        float vx = this->max_velocity;  // Movimento para frente
-        float vy = -lateral_correction;     // Correção lateral (negativo para corrigir)
-        float vz = 0.0f;                   // Manter altitude
-        float yaw_rate = angular_correction; // Correção de orientação
-        
+        // Comandar velocidades no frame local do drone
         this->drone->setLocalVelocity(vx, vy, vz, yaw_rate);
         
-        // Log para debug (agora com coordenadas normalizadas)
+        // Log para debug simples
         this->drone->log("Lane following - X_norm: " + std::to_string(x_centroid_normalized) + 
                         ", X_error: " + std::to_string(x_centroid_normalized - TARGET_X_NORMALIZED) +
                         ", Theta: " + std::to_string(theta) +
-                        ", Lateral_cmd: " + std::to_string(vy) +
-                        ", Angular_cmd: " + std::to_string(yaw_rate));
+                        ", Vx: " + std::to_string(vx) +
+                        ", Vy: " + std::to_string(vy) +
+                        ", Yaw_rate: " + std::to_string(yaw_rate));
 
         // Verificar condições de saída (pode ser implementado conforme necessário)
         // Talvez funcione analisar o tamanho da area detectada ou tempo sem detecção

@@ -18,7 +18,7 @@ class LaneDetector(Node):
 
 		self._subscriber = self.create_subscription(
 			CompressedImage,
-			'camera/compressed',
+			'/vertical_camera/compressed',
 			self.lane_detection_callback,
 			10
 		)
@@ -111,10 +111,12 @@ class LaneDetector(Node):
 		lane_msg.x_centroid = int(cx * 1000)  # Multiplicar por 1000 para manter precisão como int
 		lane_msg.y_centroid = int(cy * 1000)  # Dividir por 1000 no lado C++ para obter float
 		
+		print(f"Lane Direction - Theta: {lane_msg.theta:.2f}, X: {lane_msg.x_centroid}, Y: {lane_msg.y_centroid}")
+
 		self._publisher.publish(lane_msg)
 
 		# Opcional: mostrar imagens para debug (descomente se necessário)
-		# self.show_image(binary_mask, output_image)
+		self.show_image(binary_mask, output_image)
 
 	def show_image(self, binary_mask, output_image):
 		#cv2.imshow('mascara', binary_mask)

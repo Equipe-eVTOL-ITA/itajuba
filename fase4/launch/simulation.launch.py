@@ -64,14 +64,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Base detector node
-    base_detector_node = Node(
-        package='cbr_cv_utils',
-        executable='base_detector',
-        parameters=[simulation_params],
-        output='screen'
-    )
-
     fsm_node = Node(
         package='itajuba_fase4',
         executable=LaunchConfiguration("mission"),
@@ -87,7 +79,6 @@ def generate_launch_description():
         telemetry_dashboard_node,
         telemetry_recorder_node,
         rviz_node,
-        system_health_node,        
-        base_detector_node,
+        system_health_node,
         delayed_fsm_node
     ])
