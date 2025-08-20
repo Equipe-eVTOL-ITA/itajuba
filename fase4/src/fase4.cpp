@@ -96,6 +96,7 @@ public:
             {"fictual_home_z", 0.0},
             {"max_vertical_velocity", 0.5},
             {"max_horizontal_velocity", 0.1},
+            {"max_yaw_rate", 2.0},
             {"position_tolerance", 0.1},
             {"takeoff_height", -1.5},
             {"pid_pos_kp", 1.0},

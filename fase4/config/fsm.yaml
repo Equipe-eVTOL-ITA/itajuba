@@ -10,7 +10,8 @@ fase4_fsm:
     max_vertical_velocity: 0.5
     
     # Lane following parameters
-    max_horizontal_velocity: 1.0
+    max_horizontal_velocity: 0.5
+    max_yaw_rate: 1.0
     position_tolerance: 0.1
 
     # PID parameters for positioning
@@ -20,13 +21,12 @@ fase4_fsm:
     setpoint: 0.0
 
     # Lane following PID - Controle lateral (alinhamento em X)
-    # Coordenadas normalizadas(um range de -1 até +1)
     pid_lateral_kp: 1.0
-    pid_lateral_ki: 0.00
+    pid_lateral_ki: 0.0
     pid_lateral_kd: 0.0 
 
     # Lane following PID - Controle angular (alinhamento em theta)
-    pid_angular_kp: 0.5
+    pid_angular_kp: 1.0
     pid_angular_ki: 0.01
     pid_angular_kd: 0.1
 
