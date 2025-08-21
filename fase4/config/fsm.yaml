@@ -8,6 +8,10 @@ fase4_fsm:
     # Takeoff parameters
     takeoff_height: -1.5
     max_vertical_velocity: 0.5
+
+    # Landing parameters
+    landing_velocity: 0.3
+    landing_timeout: 10.0
     
     # Lane following parameters
     max_horizontal_velocity: 0.6

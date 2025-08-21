@@ -11,6 +11,7 @@
 #include "fase4/arming_state.hpp"
 #include "fase4/takeoff_state.hpp"
 #include "fase4/follow_lane_state.hpp"
+#include "fase4/landing_state.hpp"
 
 
 template<typename DoubleHandler, typename StringHandler>
@@ -57,7 +58,9 @@ public:
         this->add_state("ARMING", std::make_unique<ArmingState>());
         this->add_state("INITIAL TAKEOFF", std::make_unique<TakeoffState>());
         this->add_state("FOLLOW_LANE", std::make_unique<FollowLaneState>());
-        
+        this->add_state("LAND ON GOAL", std::make_unique<LandingState>());
+        this->add_state("GOAL TAKEOFF", std::make_unique<TakeoffState>());
+
         this->set_initial_state("ARMING");
 
         // Transições de Estados
@@ -69,12 +72,22 @@ public:
 
         this->add_transitions("INITIAL TAKEOFF", {
             {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
-            {"TAKEOFF FAILED", "ERROR"}
+            {"SEG FAULT", "ERROR"}
         });
 
         this->add_transitions("FOLLOW_LANE", {
-            {"LANE_LOST", "ERROR"},
-            {"LANE ENDED", "LANDING"}
+            {"LANE ENDED", "LAND ON GOAL"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("LAND ON GOAL", {
+            {"LANDED", "GOAL TAKEOFF"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("GOAL TAKEOFF", {
+            {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
+            {"SEG FAULT", "ERROR"}
         });
 
     }
@@ -95,6 +108,8 @@ public:
             {"fictual_home_y", 0.0},
             {"fictual_home_z", 0.0},
             {"max_vertical_velocity", 0.5},
+            {"landing_velocity", 0.3},
+            {"landing_timeout", 10.0},
             {"max_horizontal_velocity", 0.1},
             {"max_yaw_rate", 2.0},
             {"position_tolerance", 0.1},

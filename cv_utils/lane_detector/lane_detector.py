@@ -25,6 +25,7 @@ class LaneDetector(Node):
 		self.bridge = CvBridge()
 
 		self.last_area = 0
+		self.last_y = 0
 	
 	def lane_detection_callback(self, msg):
 		np_arr = np.frombuffer(msg.data, np.uint8)

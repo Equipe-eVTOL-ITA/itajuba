@@ -92,7 +92,7 @@ public:
         if (abs(abs(drone->getAltitude()) - abs(height)) <= position_tolerance && !this->vision->isLaneDetected()) {
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);
             this->drone->log("No lane detected - stopping");
-            return "LANE_LOST";
+            return "LANE ENDED";
         }
 
         // Obter dados da lane
