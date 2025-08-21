@@ -17,6 +17,8 @@ struct LaneData {
     float theta;           // Ângulo da faixa (em radianos)
     int32_t x_centroid;    // Centro X da faixa (pixels)
     int32_t y_centroid;    // Centro Y da faixa (pixels)
+    int32_t area;          // Área do contorno da faixa (pixels)
+    bool lost;            // Indica se a faixa foi perdida
     int64_t timestamp;     // Timestamp da detecção
 };
 
@@ -84,7 +86,8 @@ private:
         last_detection_time_ = std::chrono::steady_clock::now();
 
         // Verifica se há detecção válida
-        if (msg->x_centroid == 0 && msg->y_centroid == 0 && msg->theta == 0.0f) {
+        //if (msg->x_centroid == 0 && msg->y_centroid == 0 && msg->theta == 0.0f && msg->area <= 0) {
+        if(msg->lost) {
             has_lane_detection_ = false;
             RCLCPP_DEBUG(this->get_logger(), "No lane detected");
             return;
@@ -94,6 +97,8 @@ private:
         current_lane_data_.theta = msg->theta;
         current_lane_data_.x_centroid = msg->x_centroid;
         current_lane_data_.y_centroid = msg->y_centroid;
+        current_lane_data_.area = msg->area;
+        current_lane_data_.lost = msg->lost;
         current_lane_data_.timestamp = this->get_clock()->now().nanoseconds();
         
         has_lane_detection_ = true;

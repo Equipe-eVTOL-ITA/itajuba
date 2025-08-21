@@ -1,0 +1,1 @@
+ros2 run itajuba_fase4 fase4 --ros-args --params-file /home/marconipavan/frtl_2025_ws/src/itajuba/fase4/config/fsm.yaml 

@@ -23,6 +23,8 @@ class LaneDetector(Node):
 			10
 		)
 		self.bridge = CvBridge()
+
+		self.last_area = 0
 	
 	def lane_detection_callback(self, msg):
 		np_arr = np.frombuffer(msg.data, np.uint8)
@@ -62,7 +64,8 @@ class LaneDetector(Node):
 			maior_contorno = max(contornos, key=cv2.contourArea)
 			area = cv2.contourArea(maior_contorno)
 
-			if area > 200:
+			lane_msg = LaneDirection()
+			if area > 15000:
 				cv2.drawContours(output_image, [maior_contorno], 0, (0, 255, 0), 3)
 
 				# técnica dos momentos de imagem
@@ -96,26 +99,33 @@ class LaneDetector(Node):
 					)
 					cv2.arrowedLine(output_image, start_point, end_point, (0, 0, 255), 3)
 					
-					# Adicionar texto com informações normalizadas para debug
-					info_text = f"Norm: ({cx:.2f}, {cy:.2f}), Theta: {math.degrees(theta):.1f}°"
+					info_text = f"Centro: ({cx:.2f}, {cy:.2f}), Theta: {math.degrees(theta):.1f}°, Area: {area}"
 					cv2.putText(output_image, info_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+
+					lane_msg.theta = float(theta)
+					lane_msg.x_centroid = int(cx * 1000)  # Multiplicar por 1000 para manter precisão como int
+					lane_msg.y_centroid = int(cy * 1000)  # Dividir por 1000 no lado C++ para obter float
+
+					self.last_y = cy
+
+					self.last_area = int(area)
+					lane_msg.area = self.last_area
+
+					lane_msg.lost = False
+
+					print(f"Lane Direction - Theta: {lane_msg.theta:.2f}, X: {lane_msg.x_centroid}, Y: {lane_msg.y_centroid}")
 				else:
 					self.get_logger().warn('Contorno detectado mas momento zero é inválido')
 			else:
+				lane_msg.theta = 0.0
+				lane_msg.x_centroid = 0
+				lane_msg.y_centroid = 0
+				lane_msg.area = self.last_area
+				lane_msg.lost = self.last_y >= 0.8 # se o último Y foi muito baixo, provavelmente perdeu a faixa
 				self.get_logger().debug(f'Contorno muito pequeno: área = {area}')
-
-		# Publicar sempre, mesmo que não haja detecção válida
-		# Agora cx e cy são valores normalizados entre -1 e +1
-		lane_msg = LaneDirection()
-		lane_msg.theta = float(theta)
-		lane_msg.x_centroid = int(cx * 1000)  # Multiplicar por 1000 para manter precisão como int
-		lane_msg.y_centroid = int(cy * 1000)  # Dividir por 1000 no lado C++ para obter float
+			
+			self._publisher.publish(lane_msg)
 		
-		print(f"Lane Direction - Theta: {lane_msg.theta:.2f}, X: {lane_msg.x_centroid}, Y: {lane_msg.y_centroid}")
-
-		self._publisher.publish(lane_msg)
-
-		# Opcional: mostrar imagens para debug (descomente se necessário)
 		self.show_image(binary_mask, output_image)
 
 	def show_image(self, binary_mask, output_image):
