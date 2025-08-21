@@ -89,18 +89,29 @@ public:
     std::string act(fsm::Blackboard& bb) override {
         (void) bb; // Evitar warning de parâmetro não usado
 
-        if (abs(abs(drone->getAltitude()) - abs(height)) <= position_tolerance && !this->vision->isLaneDetected()) {
-            this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);
-            this->drone->log("No lane detected - stopping");
-            return "LANE ENDED";
-        }
-
-        // Obter dados da lane
         auto lane_data = this->vision->getCurrentLaneData();
+        bool circle_detected = lane_data.is_circle;
+
         float theta = lane_data.theta;
+
         int x_centroid_scaled = lane_data.x_centroid;
-        
         float x_centroid_normalized = static_cast<float>(x_centroid_scaled) / 1000.0f;
+        
+        int y_centroid_scaled = lane_data.y_centroid;
+        //float y_centroid_normalized = static_cast<float>(y_centroid_scaled) / 1000.0f;
+
+        if (abs(abs(drone->getAltitude()) - abs(height)) <= position_tolerance){
+            if(circle_detected){
+                this->drone->log("Circle detected - stopping drone");
+                this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);
+                return "CIRCLE DETECTED";
+            }
+            else if(!this->vision->isLaneDetected()) {
+                this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);
+                this->drone->log("No lane detected - stopping");
+                return "LANE ENDED";
+            }
+        }
 
         float lateral_correction = this->lateral_pid->compute(x_centroid_normalized);
         float angular_correction = this->angular_pid->compute(theta);

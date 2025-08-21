@@ -11,6 +11,7 @@
 #include "fase4/arming_state.hpp"
 #include "fase4/takeoff_state.hpp"
 #include "fase4/follow_lane_state.hpp"
+#include "fase4/align_with_circle_state.hpp"
 #include "fase4/landing_state.hpp"
 
 
@@ -58,6 +59,7 @@ public:
         this->add_state("ARMING", std::make_unique<ArmingState>());
         this->add_state("INITIAL TAKEOFF", std::make_unique<TakeoffState>());
         this->add_state("FOLLOW_LANE", std::make_unique<FollowLaneState>());
+        this->add_state("ALIGN_WITH_CIRCLE", std::make_unique<AlignWithCircleState>());
         this->add_state("LAND ON GOAL", std::make_unique<LandingState>());
         this->add_state("GOAL TAKEOFF", std::make_unique<TakeoffState>());
 
@@ -76,7 +78,15 @@ public:
         });
 
         this->add_transitions("FOLLOW_LANE", {
+            {"CIRCLE DETECTED", "ALIGN_WITH_CIRCLE"},
             {"LANE ENDED", "LAND ON GOAL"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("ALIGN_WITH_CIRCLE", {
+            {"ALIGNED", "LAND ON GOAL"},
+            {"TIMEOUT", "LAND ON GOAL"},
+            {"CIRCLE LOST", "LAND ON GOAL"},
             {"SEG FAULT", "ERROR"}
         });
 

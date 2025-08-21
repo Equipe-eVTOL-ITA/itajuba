@@ -114,6 +114,9 @@ class LaneDetector(Node):
 
 					lane_msg.lost = False
 
+					is_circle, confidence, metrics = self.analyze_shape(maior_contorno, area)
+					lane_msg.is_circle = is_circle
+
 					print(f"Lane Direction - Theta: {lane_msg.theta:.2f}, X: {lane_msg.x_centroid}, Y: {lane_msg.y_centroid}")
 				else:
 					self.get_logger().warn('Contorno detectado mas momento zero é inválido')
@@ -133,6 +136,54 @@ class LaneDetector(Node):
 		#cv2.imshow('mascara', binary_mask)
 		cv2.imshow('Lane Detection', output_image)
 		cv2.waitKey(1)
+
+	def analyze_shape(self, contour, area):
+		"""
+		Analisa se o contorno é um círculo usando múltiplas técnicas
+		Retorna: (is_circle, confidence, metrics)
+		"""
+		metrics = {}
+		
+		# 1. Circularidade
+		perimeter = cv2.arcLength(contour, True)
+		if perimeter > 0:
+			circularity = 4 * math.pi * area / (perimeter * perimeter)
+			metrics['circularity'] = circularity
+		else:
+			metrics['circularity'] = 0
+		
+		# 2. Ajuste de círculo
+		(circle_x, circle_y), radius = cv2.minEnclosingCircle(contour)
+		circle_area = math.pi * radius * radius
+		area_ratio = area / circle_area if circle_area > 0 else 0
+		metrics['area_ratio'] = area_ratio
+		
+		# 3. Análise de momentos para excentricidade
+		M = cv2.moments(contour)
+		if M['m00'] > 0:
+			mu20 = M['mu20'] / M['m00']
+			mu02 = M['mu02'] / M['m00'] 
+			mu11 = M['mu11'] / M['m00']
+			
+			lambda1 = 0.5 * (mu20 + mu02 + math.sqrt(4 * mu11**2 + (mu20 - mu02)**2))
+			lambda2 = 0.5 * (mu20 + mu02 - math.sqrt(4 * mu11**2 + (mu20 - mu02)**2))
+			
+			eccentricity = math.sqrt(1 - lambda2/lambda1) if lambda1 > 0 else 1
+			metrics['eccentricity'] = eccentricity
+		else:
+			metrics['eccentricity'] = 1
+		
+		# 4. Decisão combinada
+		circle_tests = [
+			metrics['circularity'] > 0.85,
+			metrics['area_ratio'] > 0.8,
+			metrics['eccentricity'] < 0.3
+		]
+		
+		confidence = sum(circle_tests) / len(circle_tests)
+		is_circle = confidence >= 0.67  # Pelo menos 2 de 3 testes passaram
+		
+		return is_circle, confidence, metrics
 
 
 def main(args=None):

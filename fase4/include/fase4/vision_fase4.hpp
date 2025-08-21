@@ -19,6 +19,7 @@ struct LaneData {
     int32_t y_centroid;    // Centro Y da faixa (pixels)
     int32_t area;          // Área do contorno da faixa (pixels)
     bool lost;            // Indica se a faixa foi perdida
+    bool is_circle;       // Indica se a detecção é um círculo
     int64_t timestamp;     // Timestamp da detecção
 };
 
@@ -99,6 +100,7 @@ private:
         current_lane_data_.y_centroid = msg->y_centroid;
         current_lane_data_.area = msg->area;
         current_lane_data_.lost = msg->lost;
+        current_lane_data_.is_circle = msg->is_circle;
         current_lane_data_.timestamp = this->get_clock()->now().nanoseconds();
         
         has_lane_detection_ = true;
