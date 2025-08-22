@@ -179,8 +179,8 @@ def create_path_sdf(points, width=0.3, color=[0, 0, 1, 1], model_name="generated
     final_point = points[-1]  # Último ponto do caminho
     sdf_content += f"""
     <include>
-      <uri>model://sae/plataforma_cruz</uri>
-      <pose>{final_point[0]} {final_point[1]} {final_point[2]} 1.57 0 0</pose>
+      <uri>model://sae/plataforma_com_circulo</uri>
+      <pose>{final_point[0]} {final_point[1]} {final_point[2]} 0 0 0</pose>
     </include>
 
   </model>

@@ -89,7 +89,9 @@ class LaneDetector(Node):
 					mu20 = M['mu20']
 					mu02 = M['mu02']
 					mu11 = M['mu11']
-					theta = 0.5*math.atan2(2*mu11, mu20 - mu02)
+					theta = 0.5*math.atan2(2*mu11, mu20 - mu02) # -pi/2 ate pi/2
+					
+					theta = math.asin(math.sin(theta))  # Garante que theta esteja entre -pi/2 e pi/2
 
 					# desenha a seta da orientação (usando coordenadas em pixels para visualização)
 					tamanho = 100
@@ -103,7 +105,7 @@ class LaneDetector(Node):
 					info_text = f"Centro: ({cx:.2f}, {cy:.2f}), Theta: {math.degrees(theta):.1f}°, Area: {area}"
 					cv2.putText(output_image, info_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
-					lane_msg.theta = float(theta)
+					lane_msg.theta = float(theta) # Ajusta para o sistema de coordenadas do drone
 					lane_msg.x_centroid = int(cx * 1000)  # Multiplicar por 1000 para manter precisão como int
 					lane_msg.y_centroid = int(cy * 1000)  # Dividir por 1000 no lado C++ para obter float
 

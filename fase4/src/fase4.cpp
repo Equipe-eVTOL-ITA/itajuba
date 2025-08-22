@@ -13,6 +13,8 @@
 #include "fase4/follow_lane_state.hpp"
 #include "fase4/align_with_circle_state.hpp"
 #include "fase4/landing_state.hpp"
+#include "fase4/search_lane_state.hpp"
+#include "fase4/meia_volta_volver_state.hpp"
 
 
 template<typename DoubleHandler, typename StringHandler>
@@ -62,6 +64,8 @@ public:
         this->add_state("ALIGN_WITH_CIRCLE", std::make_unique<AlignWithCircleState>());
         this->add_state("LAND ON GOAL", std::make_unique<LandingState>());
         this->add_state("GOAL TAKEOFF", std::make_unique<TakeoffState>());
+        this->add_state("SEARCH_LANE", std::make_unique<SearchLaneState>());
+        this->add_state("MEIA VOLTA VOLVER", std::make_unique<MeiaVoltaVolverState>());
 
         this->set_initial_state("ARMING");
 
@@ -73,13 +77,19 @@ public:
         });
 
         this->add_transitions("INITIAL TAKEOFF", {
-            {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
+            {"TAKEOFF COMPLETED", "SEARCH_LANE"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("SEARCH_LANE", {
+            {"LANE FOUND", "FOLLOW_LANE"},
             {"SEG FAULT", "ERROR"}
         });
 
         this->add_transitions("FOLLOW_LANE", {
-            {"CIRCLE DETECTED", "ALIGN_WITH_CIRCLE"},
-            {"LANE ENDED", "LAND ON GOAL"},
+            //{"CIRCLE DETECTED", "ALIGN_WITH_CIRCLE"},
+            //{"LANE ENDED", "LAND ON GOAL"},
+            {"CIRCLE DETECTED", "LAND ON GOAL"},
             {"SEG FAULT", "ERROR"}
         });
 
@@ -96,7 +106,12 @@ public:
         });
 
         this->add_transitions("GOAL TAKEOFF", {
-            {"TAKEOFF COMPLETED", "FOLLOW_LANE"},
+            {"TAKEOFF COMPLETED", "MEIA VOLTA VOLVER"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("MEIA VOLTA VOLVER", {
+            {"VOLVER COMPLETED", "SEARCH_LANE"},
             {"SEG FAULT", "ERROR"}
         });
 
@@ -123,6 +138,7 @@ public:
             {"max_horizontal_velocity", 0.1},
             {"max_yaw_rate", 2.0},
             {"position_tolerance", 0.1},
+            {"max_angle_for_translation", 0.26179}, // 45 graus em radianos
             {"takeoff_height", -1.5},
             {"pid_pos_kp", 1.0},
             {"pid_pos_ki", 0.0},
@@ -133,7 +149,9 @@ public:
             {"pid_lateral_kd", 0.0},
             {"pid_angular_kp", 0.5},
             {"pid_angular_ki", 0.01},
-            {"pid_angular_kd", 0.1}
+            {"pid_angular_kd", 0.1},
+            {"yaw_tolerance", 0.087}, // 5 graus em rad
+            {"volver_timeout", 10.0}
         };
 
         // Create and configure FSM with parameters
