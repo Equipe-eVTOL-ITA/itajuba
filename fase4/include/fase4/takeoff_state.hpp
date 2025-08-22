@@ -2,6 +2,11 @@
 #include "fsm/fsm.hpp"
 #include "drone/Drone.hpp"
 
+enum TAKEOFF_PHASE {
+    INITIAL_TAKEOFF = 0,
+    GOAL_TAKEOFF = 1
+};
+
 class TakeoffState : public fsm::State {
 private:
     std::shared_ptr<Drone> drone;
@@ -10,6 +15,7 @@ private:
     float max_velocity;
     float position_tolerance;
     float initial_yaw;
+    bool take_off_taken;
 
 public:
     TakeoffState() : fsm::State() {}
@@ -32,6 +38,8 @@ public:
         this->initial_yaw = this->drone->getOrientation()[2];
         this->goal = Eigen::Vector3d({this->pos[0], this->pos[1], takeoff_height});
 
+        this->take_off_taken = *bb.get<bool>("initial_takeoff_taken");
+
         this->log_(true);
     }
 
@@ -48,7 +56,13 @@ public:
                              std::to_string(this->pos[0]) + ", " + 
                              std::to_string(this->pos[1]) + ", " + 
                              std::to_string(this->pos[2]));
-            return "TAKEOFF COMPLETED";
+
+            if(!this->take_off_taken) {
+                bb.set<bool>("initial_takeoff_taken", true);
+                return "INITIAL TAKEOFF COMPLETED"; // proximo é comecar a procurar a pista para depois segui-la
+            }
+            
+            return "TAKEOFF COMPLETED"; // proximo é o volver
         }
 
         Eigen::Vector3d little_goal =

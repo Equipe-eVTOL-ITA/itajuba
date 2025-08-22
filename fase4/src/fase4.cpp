@@ -17,19 +17,22 @@
 #include "fase4/meia_volta_volver_state.hpp"
 
 
-template<typename DoubleHandler, typename StringHandler>
-std::map<std::string, std::variant<double, std::string>> actOnBlackboardMap(
-    const std::map<std::string, std::variant<double, std::string>>& defaults,
+template<typename DoubleHandler, typename StringHandler, typename BooleanHandler>
+std::map<std::string, std::variant<double, std::string, bool>> actOnBlackboardMap(
+    const std::map<std::string, std::variant<double, std::string, bool>>& defaults,
     DoubleHandler&& double_handler,
-    StringHandler&& string_handler) {
-        
-    std::map<std::string, std::variant<double, std::string>> result;
-        
+    StringHandler&& string_handler,
+    BooleanHandler&& boolean_handler) {
+
+    std::map<std::string, std::variant<double, std::string, bool>> result;
+
     for (const auto& [name, default_value] : defaults) {
         if (std::holds_alternative<double>(default_value)) {
             result[name] = double_handler(name, std::get<double>(default_value));
         } else if (std::holds_alternative<std::string>(default_value)) {
             result[name] = string_handler(name, std::get<std::string>(default_value));
+        } else if (std::holds_alternative<bool>(default_value)) {
+            result[name] = boolean_handler(name, std::get<bool>(default_value));
         }
     }
     
@@ -38,7 +41,7 @@ std::map<std::string, std::variant<double, std::string>> actOnBlackboardMap(
 
 class Fase4FSM : public fsm::FSM {
 public:
-    Fase4FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision, const std::map<std::string, std::variant<double, std::string>>& parameters) : fsm::FSM({"ERROR", "FINISHED"}){
+    Fase4FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision, const std::map<std::string, std::variant<double, std::string, bool>>& parameters) : fsm::FSM({"ERROR", "FINISHED"}){
         this->blackboard_set<std::shared_ptr<Drone>>("drone", drone);
         this->blackboard_set<std::shared_ptr<VisionNode>>("vision", vision);
         
@@ -54,64 +57,63 @@ public:
             [this](const std::string& name, const std::string& value) -> std::string {
                 this->blackboard_set<std::string>(name, value);
                 return value;
+            },
+            [this](const std::string& name, bool value) -> bool {
+                this->blackboard_set<bool>(name, value);
+                return value;
             }
         );
 
         // Máquina de Estados
         this->add_state("ARMING", std::make_unique<ArmingState>());
-        this->add_state("INITIAL TAKEOFF", std::make_unique<TakeoffState>());
-        this->add_state("FOLLOW_LANE", std::make_unique<FollowLaneState>());
-        this->add_state("ALIGN_WITH_CIRCLE", std::make_unique<AlignWithCircleState>());
-        this->add_state("LAND ON GOAL", std::make_unique<LandingState>());
-        this->add_state("GOAL TAKEOFF", std::make_unique<TakeoffState>());
-        this->add_state("SEARCH_LANE", std::make_unique<SearchLaneState>());
+        this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
+        this->add_state("FOLLOW LANE", std::make_unique<FollowLaneState>());
+        this->add_state("ALIGN WITH CIRCLE", std::make_unique<AlignWithCircleState>());
+        this->add_state("LAND", std::make_unique<LandingState>());
+        this->add_state("SEARCH LANE", std::make_unique<SearchLaneState>());
         this->add_state("MEIA VOLTA VOLVER", std::make_unique<MeiaVoltaVolverState>());
 
         this->set_initial_state("ARMING");
 
         // Transições de Estados
         this->add_transitions("ARMING", {
-            {"ARMED", "INITIAL TAKEOFF"},
+            {"ARMED", "TAKEOFF"},
             {"NOT ARMED", "ERROR"},
             {"SEG FAULT", "ERROR"}
         });
 
-        this->add_transitions("INITIAL TAKEOFF", {
-            {"TAKEOFF COMPLETED", "SEARCH_LANE"},
-            {"SEG FAULT", "ERROR"}
-        });
-
-        this->add_transitions("SEARCH_LANE", {
-            {"LANE FOUND", "FOLLOW_LANE"},
-            {"SEG FAULT", "ERROR"}
-        });
-
-        this->add_transitions("FOLLOW_LANE", {
-            //{"CIRCLE DETECTED", "ALIGN_WITH_CIRCLE"},
-            //{"LANE ENDED", "LAND ON GOAL"},
-            {"CIRCLE DETECTED", "LAND ON GOAL"},
-            {"SEG FAULT", "ERROR"}
-        });
-
-        this->add_transitions("ALIGN_WITH_CIRCLE", {
-            {"ALIGNED", "LAND ON GOAL"},
-            {"TIMEOUT", "LAND ON GOAL"},
-            {"CIRCLE LOST", "LAND ON GOAL"},
-            {"SEG FAULT", "ERROR"}
-        });
-
-        this->add_transitions("LAND ON GOAL", {
-            {"LANDED", "GOAL TAKEOFF"},
-            {"SEG FAULT", "ERROR"}
-        });
-
-        this->add_transitions("GOAL TAKEOFF", {
+        this->add_transitions("TAKEOFF", {
+            {"INITIAL TAKEOFF COMPLETED", "SEARCH LANE"},
             {"TAKEOFF COMPLETED", "MEIA VOLTA VOLVER"},
             {"SEG FAULT", "ERROR"}
         });
 
+        this->add_transitions("SEARCH LANE", {
+            {"LANE FOUND", "FOLLOW LANE"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("FOLLOW LANE", {
+            {"CIRCLE DETECTED", "ALIGN WITH CIRCLE"},
+            {"ANGLE TOO LARGE", "LAND"},
+            {"LANE LOST", "SEARCH LANE"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("ALIGN WITH CIRCLE", {
+            {"ALIGNED", "LAND"},
+            {"TIMEOUT", "LAND"},
+            {"CIRCLE LOST", "LAND"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("LAND", {
+            {"LANDED", "TAKEOFF"},
+            {"SEG FAULT", "ERROR"}
+        });
+
         this->add_transitions("MEIA VOLTA VOLVER", {
-            {"VOLVER COMPLETED", "SEARCH_LANE"},
+            {"VOLVER COMPLETED", "SEARCH LANE"},
             {"SEG FAULT", "ERROR"}
         });
 
@@ -128,7 +130,7 @@ private:
 public:
     NodeFSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision) : rclcpp::Node("fase4_fsm"), drone_node_(drone), vision_node_(vision) {
         
-        std::map<std::string, std::variant<double, std::string>> defaults = {
+        std::map<std::string, std::variant<double, std::string, bool>> defaults = {
             {"fictual_home_x", 0.0},
             {"fictual_home_y", 0.0},
             {"fictual_home_z", 0.0},
@@ -151,7 +153,14 @@ public:
             {"pid_angular_ki", 0.01},
             {"pid_angular_kd", 0.1},
             {"yaw_tolerance", 0.087}, // 5 graus em rad
-            {"volver_timeout", 10.0}
+            {"volver_timeout", 10.0},
+            {"initial_takeoff_taken", false},
+            {"angulo_muito_pequeno_seguir_reto", 1.4}, // angulo limite. Mais que isso, é estranho
+            {"has_ever_detected_circle", false},
+            {"last_x_circle", 0.0},
+            {"last_y_circle", 0.0},
+            {"timeout_circle_detection", 10.0}, // Timeout para circle detection
+            {"normalized_position_tolerance_circle_align", 0.05}
         };
 
         // Create and configure FSM with parameters
@@ -166,6 +175,10 @@ public:
             [this](const std::string& name, const std::string& default_value) -> std::string {
                 this->declare_parameter(name, default_value);
                 return this->get_parameter(name).as_string();
+            },
+            [this](const std::string& name, bool default_value) -> bool {
+                this->declare_parameter(name, default_value);
+                return this->get_parameter(name).as_bool();
             }
         );
 

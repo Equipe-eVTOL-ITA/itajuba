@@ -5,11 +5,11 @@
     <pose>0 0 0 0 0 0</pose>
 
     <link name="path_segment_0">
-      <pose>0.054532255503809184 -0.003076366940973378 9.967201166180758e-05 0 0 -0.056353980052986835</pose>
+      <pose>0.01972303206997084 0.0 9.967201166180758e-05 0 0 0.0</pose>
       <visual name="path_visual_0">
         <geometry>
           <box>
-            <size>0.10923792242418823 0.25 0.002</size>
+            <size>0.03944606413994168 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -21,18 +21,18 @@
       <collision name="path_collision_0">
         <geometry>
           <box>
-            <size>0.10923792242418823 0.25 0.002</size>
+            <size>0.03944606413994168 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_1">
-      <pose>0.1689747436434626 -0.014435260261490467 0.0002848032069970846 0 0 -0.13737813481214914</pose>
+      <pose>0.05995626822157435 0.0 0.0002848032069970846 0 0 0.0</pose>
       <visual name="path_visual_1">
         <geometry>
           <box>
-            <size>0.1209600961922371 0.25 0.002</size>
+            <size>0.04102040816326533 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -44,18 +44,18 @@
       <collision name="path_collision_1">
         <geometry>
           <box>
-            <size>0.1209600961922371 0.25 0.002</size>
+            <size>0.04102040816326533 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_2">
-      <pose>0.2929290995195253 -0.03478661079408358 0.0004426020408163266 0 0 -0.18626114171479743</pose>
+      <pose>0.10163265306122449 0.0 0.0004426020408163266 0 0 0.0</pose>
       <visual name="path_visual_2">
         <geometry>
           <box>
-            <size>0.13034272113233664 0.25 0.002</size>
+            <size>0.042332361516034964 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -67,18 +67,18 @@
       <collision name="path_collision_2">
         <geometry>
           <box>
-            <size>0.13034272113233664 0.25 0.002</size>
+            <size>0.042332361516034964 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_3">
-      <pose>0.42390715007667573 -0.06129069520862345 0.0005752551020408163 0 0 -0.21241104671817387</pose>
+      <pose>0.14448979591836733 0.0 0.0005752551020408163 0 0 0.0</pose>
       <visual name="path_visual_3">
         <geometry>
           <box>
-            <size>0.13694564417878066 0.25 0.002</size>
+            <size>0.04338192419825071 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -90,18 +90,18 @@
       <collision name="path_collision_3">
         <geometry>
           <box>
-            <size>0.13694564417878066 0.25 0.002</size>
+            <size>0.04338192419825071 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_4">
-      <pose>0.5594207222595924 -0.0911077901749808 0.0006849489795918368 0 0 -0.22064002526688842</pose>
+      <pose>0.18826530612244896 0.0 0.0006849489795918368 0 0 0.0</pose>
       <visual name="path_visual_4">
         <geometry>
           <box>
-            <size>0.14056697377168553 0.25 0.002</size>
+            <size>0.04416909620991252 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -113,18 +113,18 @@
       <collision name="path_collision_4">
         <geometry>
           <box>
-            <size>0.14056697377168553 0.25 0.002</size>
+            <size>0.04416909620991252 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_5">
-      <pose>0.6969816430129538 -0.12139817236302637 0.0007738702623906706 0 0 -0.2128507794496646</pose>
+      <pose>0.2326967930029154 0.0 0.0007738702623906706 0 0 0.0</pose>
       <visual name="path_visual_5">
         <geometry>
           <box>
-            <size>0.1411478828903725 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -136,18 +136,18 @@
       <collision name="path_collision_5">
         <geometry>
           <box>
-            <size>0.1411478828903725 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_6">
-      <pose>0.8341017392814387 -0.14932211844263088 0.0008442055393586005 0 0 -0.18873944255114738</pose>
+      <pose>0.2775218658892128 0.0 0.0008442055393586005 0 0 0.0</pose>
       <visual name="path_visual_6">
         <geometry>
           <box>
-            <size>0.13874147820392785 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -159,18 +159,18 @@
       <collision name="path_collision_6">
         <geometry>
           <box>
-            <size>0.13874147820392785 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_7">
-      <pose>0.9682928380097251 -0.17203990508366507 0.0008981413994169098 0 0 -0.14584654269072872</pose>
+      <pose>0.3224781341107872 0.0 0.0008981413994169098 0 0 0.0</pose>
       <visual name="path_visual_7">
         <geometry>
           <box>
-            <size>0.1335221301301218 0.25 0.002</size>
+            <size>0.044956268221574336 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -182,18 +182,18 @@
       <collision name="path_collision_7">
         <geometry>
           <box>
-            <size>0.1335221301301218 0.25 0.002</size>
+            <size>0.044956268221574336 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_8">
-      <pose>1.0970667661424915 -0.18671180895599965 0.0009378644314868806 0 0 -0.07906609552826835</pose>
+      <pose>0.3673032069970845 0.0 0.0009378644314868806 0 0 0.0</pose>
       <visual name="path_visual_8">
         <geometry>
           <box>
-            <size>0.12583642460572358 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -205,18 +205,18 @@
       <collision name="path_collision_8">
         <geometry>
           <box>
-            <size>0.12583642460572358 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_9">
-      <pose>1.2179353506244168 -0.19049810672950535 0.000965561224489796 0 0 0.020345952687772905</pose>
+      <pose>0.41173469387755096 0.0 0.000965561224489796 0 0 0.0</pose>
       <visual name="path_visual_9">
         <geometry>
           <box>
-            <size>0.11631794392171685 0.25 0.002</size>
+            <size>0.044169096209912495 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -228,18 +228,18 @@
       <collision name="path_collision_9">
         <geometry>
           <box>
-            <size>0.11631794392171685 0.25 0.002</size>
+            <size>0.044169096209912495 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_10">
-      <pose>1.3284104184001793 -0.18055907507405292 0.000983418367346939 0 0 0.1657893118501317</pose>
+      <pose>0.4555102040816326 0.0 0.000983418367346939 0 0 0.0</pose>
       <visual name="path_visual_10">
         <geometry>
           <box>
-            <size>0.10611122058288813 0.25 0.002</size>
+            <size>0.04338192419825082 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -251,18 +251,18 @@
       <collision name="path_collision_10">
         <geometry>
           <box>
-            <size>0.10611122058288813 0.25 0.002</size>
+            <size>0.04338192419825082 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_11">
-      <pose>1.4260037964144576 -0.15405499065951306 0.000993622448979592 0 0 0.3736730983213978</pose>
+      <pose>0.4983673469387755 0.0 0.000993622448979592 0 0 0.0</pose>
       <visual name="path_visual_11">
         <geometry>
           <box>
-            <size>0.09724080451898225 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -274,18 +274,18 @@
       <collision name="path_collision_11">
         <geometry>
           <box>
-            <size>0.09724080451898225 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_12">
-      <pose>1.5082273116119298 -0.1081461301557565 0.000998360058309038 0 0 0.6511093777764903</pose>
+      <pose>0.5400437317784256 0.0 0.000998360058309038 0 0 0.0</pose>
       <visual name="path_visual_12">
         <geometry>
           <box>
-            <size>0.09292862965778907 0.25 0.002</size>
+            <size>0.04102040816326524 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -297,18 +297,18 @@
       <collision name="path_collision_12">
         <geometry>
           <box>
-            <size>0.09292862965778907 0.25 0.002</size>
+            <size>0.04102040816326524 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_13">
-      <pose>1.5725927909372748 -0.039992770232653956 0.00099981778425656 0 0 0.9700016307656921</pose>
+      <pose>0.580276967930029 0.0 0.00099981778425656 0 0 0.0</pose>
       <visual name="path_visual_13">
         <geometry>
           <box>
-            <size>0.09696549447076078 0.25 0.002</size>
+            <size>0.03944606413994178 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -320,18 +320,18 @@
       <collision name="path_collision_13">
         <geometry>
           <box>
-            <size>0.09696549447076078 0.25 0.002</size>
+            <size>0.03944606413994178 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_14">
-      <pose>1.6207864472281104 0.050657546265916634 0.001 0 0 1.1814143160575956</pose>
+      <pose>0.6197230320699708 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_14">
         <geometry>
           <box>
-            <size>0.10951280075042358 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -343,18 +343,18 @@
       <collision name="path_collision_14">
         <geometry>
           <box>
-            <size>0.10951280075042358 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_15">
-      <pose>1.659992688998661 0.15932119395348243 0.0010000000000000002 0 0 1.2633180568804527</pose>
+      <pose>0.6599562682215744 0.0 0.0010000000000000002 0 0 0.0</pose>
       <visual name="path_visual_15">
         <geometry>
           <box>
-            <size>0.12172093711641177 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -366,18 +366,18 @@
       <collision name="path_collision_15">
         <geometry>
           <box>
-            <size>0.12172093711641177 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_16">
-      <pose>1.6952072535457101 0.2808785890646962 0.001 0 0 1.3124317950764943</pose>
+      <pose>0.7016326530612245 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_16">
         <geometry>
           <box>
-            <size>0.13146605994134009 0.25 0.002</size>
+            <size>0.04233236151603481 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -389,18 +389,18 @@
       <collision name="path_collision_16">
         <geometry>
           <box>
-            <size>0.13146605994134009 0.25 0.002</size>
+            <size>0.04233236151603481 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_17">
-      <pose>1.7279133971649356 0.4117230058239243 0.001 0 0 1.3386118972802534</pose>
+      <pose>0.7444897959183674 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_17">
         <geometry>
           <box>
-            <size>0.1382973061599219 0.25 0.002</size>
+            <size>0.04338192419825082 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -412,18 +412,18 @@
       <collision name="path_collision_17">
         <geometry>
           <box>
-            <size>0.1382973061599219 0.25 0.002</size>
+            <size>0.04338192419825082 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_18">
-      <pose>1.7595943761520156 0.5482477184555329 0.001 0 0 1.346836955464735</pose>
+      <pose>0.7882653061224489 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_18">
         <geometry>
           <box>
-            <size>0.14200976652155808 0.25 0.002</size>
+            <size>0.044169096209912384 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -435,18 +435,18 @@
       <collision name="path_collision_18">
         <geometry>
           <box>
-            <size>0.14200976652155808 0.25 0.002</size>
+            <size>0.044169096209912384 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_19">
-      <pose>1.7917334468026274 0.6868460011838882 0.001 0 0 1.3390515828495058</pose>
+      <pose>0.8326967930029154 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_19">
         <geometry>
           <box>
-            <size>0.14254399341025065 0.25 0.002</size>
+            <size>0.0446938775510205 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -458,18 +458,18 @@
       <collision name="path_collision_19">
         <geometry>
           <box>
-            <size>0.14254399341025065 0.25 0.002</size>
+            <size>0.0446938775510205 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_20">
-      <pose>1.8258138654124483 0.8239111282333565 0.001 0 0 1.3149157443832955</pose>
+      <pose>0.8775218658892128 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_20">
         <geometry>
           <box>
-            <size>0.1399536468711764 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -481,18 +481,18 @@
       <collision name="path_collision_20">
         <geometry>
           <box>
-            <size>0.1399536468711764 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_21">
-      <pose>1.8633188882771565 0.955836373828304 0.001 0 0 1.271842690293762</pose>
+      <pose>0.9224781341107873 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_21">
         <geometry>
           <box>
-            <size>0.13441560223951882 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -504,18 +504,18 @@
       <collision name="path_collision_21">
         <geometry>
           <box>
-            <size>0.13441560223951882 0.25 0.002</size>
+            <size>0.04495626822157439 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_22">
-      <pose>1.9057317716924294 1.0790150121930968 0.001 0 0 1.2044349759638702</pose>
+      <pose>0.9673032069970846 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_22">
         <geometry>
           <box>
-            <size>0.12628426041519603 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -527,18 +527,18 @@
       <collision name="path_collision_22">
         <geometry>
           <box>
-            <size>0.12628426041519603 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_23">
-      <pose>1.9545357719539442 1.1898403175521013 0.001 0 0 1.1033244783439755</pose>
+      <pose>1.011734693877551 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_23">
         <geometry>
           <box>
-            <size>0.11621569220703078 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -550,18 +550,18 @@
       <collision name="path_collision_23">
         <geometry>
           <box>
-            <size>0.11621569220703078 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_24">
-      <pose>2.0112141453573793 1.2847055641296838 0.001 0 0 0.9538695074025498</pose>
+      <pose>1.0555102040816329 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_24">
         <geometry>
           <box>
-            <size>0.10541587280112186 0.25 0.002</size>
+            <size>0.04338192419825071 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -573,18 +573,18 @@
       <collision name="path_collision_24">
         <geometry>
           <box>
-            <size>0.10541587280112186 0.25 0.002</size>
+            <size>0.04338192419825071 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_25">
-      <pose>2.0772501481984116 1.3600040261502104 0.001 0 0 0.7377387020896518</pose>
+      <pose>1.0983673469387756 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_25">
         <geometry>
           <box>
-            <size>0.09606277620456882 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -596,18 +596,18 @@
       <collision name="path_collision_25">
         <geometry>
           <box>
-            <size>0.09606277620456882 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_26">
-      <pose>2.154127036772719 1.4121289778380475 0.001 0 0 0.44708538797418446</pose>
+      <pose>1.1400437317784258 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_26">
         <geometry>
           <box>
-            <size>0.09167919944219774 0.25 0.002</size>
+            <size>0.04102040816326524 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -619,18 +619,18 @@
       <collision name="path_collision_26">
         <geometry>
           <box>
-            <size>0.09167919944219774 0.25 0.002</size>
+            <size>0.04102040816326524 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_27">
-      <pose>2.2433280673759795 1.4374736934175607 0.001 0 0 0.1149456198659145</pose>
+      <pose>1.1802769679300291 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_27">
         <geometry>
           <box>
-            <size>0.09636985818999937 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -642,18 +642,18 @@
       <collision name="path_collision_27">
         <geometry>
           <box>
-            <size>0.09636985818999937 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_28">
-      <pose>2.3443414414564088 1.4425197808659989 0.001 0 0 -0.009038380108825616</pose>
+      <pose>1.2197230320699708 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_28">
         <geometry>
           <box>
-            <size>0.10629717427076658 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -665,18 +665,18 @@
       <collision name="path_collision_28">
         <geometry>
           <box>
-            <size>0.10629717427076658 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_29">
-      <pose>2.4537480333588535 1.4444985575027358 0.0010000000000000002 0 0 0.04368246018135659</pose>
+      <pose>1.2599562682215746 0.0 0.0010000000000000002 0 0 0.0</pose>
       <visual name="path_visual_29">
         <geometry>
           <box>
-            <size>0.112627790021301 0.25 0.002</size>
+            <size>0.04102040816326569 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -688,18 +688,18 @@
       <collision name="path_collision_29">
         <geometry>
           <box>
-            <size>0.112627790021301 0.25 0.002</size>
+            <size>0.04102040816326569 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_30">
-      <pose>2.568755363891756 1.4515450702781267 0.001 0 0 0.07792846604973755</pose>
+      <pose>1.3016326530612246 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_30">
         <geometry>
           <box>
-            <size>0.11785197711358722 0.25 0.002</size>
+            <size>0.04233236151603448 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -711,18 +711,18 @@
       <collision name="path_collision_30">
         <geometry>
           <box>
-            <size>0.11785197711358722 0.25 0.002</size>
+            <size>0.04233236151603448 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_31">
-      <pose>2.6881098725830705 1.4620367201842668 0.001 0 0 0.09711217615753766</pose>
+      <pose>1.3444897959183673 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_31">
         <geometry>
           <box>
-            <size>0.12178853659719835 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -734,18 +734,18 @@
       <collision name="path_collision_31">
         <geometry>
           <box>
-            <size>0.12178853659719835 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_32">
-      <pose>2.8105579989607476 1.474350908213251 0.001 0 0 0.10328291400059296</pose>
+      <pose>1.3882653061224488 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_32">
         <geometry>
           <box>
-            <size>0.12434416777324854 0.25 0.002</size>
+            <size>0.04416909620991216 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -757,18 +757,18 @@
       <collision name="path_collision_32">
         <geometry>
           <box>
-            <size>0.12434416777324854 0.25 0.002</size>
+            <size>0.04416909620991216 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_33">
-      <pose>2.9348461825527385 1.4868650353571746 0.001 0 0 0.09744026326165106</pose>
+      <pose>1.432696793002915 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_33">
         <geometry>
           <box>
-            <size>0.12549009028443361 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -780,18 +780,18 @@
       <collision name="path_collision_33">
         <geometry>
           <box>
-            <size>0.12549009028443361 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_34">
-      <pose>3.059720862886995 1.497956502608132 0.001 0 0 0.07971955786797458</pose>
+      <pose>1.4775218658892126 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_34">
         <geometry>
           <box>
-            <size>0.12525233014919065 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -803,18 +803,18 @@
       <collision name="path_collision_34">
         <geometry>
           <box>
-            <size>0.12525233014919065 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_35">
-      <pose>3.1839284794914695 1.5060027109582186 0.001 0 0 0.04947315124913758</pose>
+      <pose>1.5224781341107871 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_35">
         <geometry>
           <box>
-            <size>0.12371206211368821 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -826,18 +826,18 @@
       <collision name="path_collision_35">
         <geometry>
           <box>
-            <size>0.12371206211368821 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_36">
-      <pose>3.306215471894112 1.5093810613995293 0.001 0 0 0.005278476450090479</pose>
+      <pose>1.5673032069970845 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_36">
         <geometry>
           <box>
-            <size>0.12101497605840919 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -849,18 +849,18 @@
       <collision name="path_collision_36">
         <geometry>
           <box>
-            <size>0.12101497605840919 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_37">
-      <pose>3.425328279622875 1.506468954924159 0.001 0 0 -0.05508334332397694</pose>
+      <pose>1.611734693877551 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_37">
         <geometry>
           <box>
-            <size>0.11739037169692014 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -872,18 +872,18 @@
       <collision name="path_collision_37">
         <geometry>
           <box>
-            <size>0.11739037169692014 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_38">
-      <pose>3.54001334220571 1.4956437925242025 0.001 0 0 -0.13459182659460653</pose>
+      <pose>1.6555102040816325 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_38">
         <geometry>
           <box>
-            <size>0.11318139147548685 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -895,18 +895,18 @@
       <collision name="path_collision_38">
         <geometry>
           <box>
-            <size>0.11318139147548685 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_39">
-      <pose>3.6490170991705684 1.4752829751917553 0.001 0 0 -0.23670916642727619</pose>
+      <pose>1.6983673469387752 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_39">
         <geometry>
           <box>
-            <size>0.10888600534548366 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -918,18 +918,18 @@
       <collision name="path_collision_39">
         <geometry>
           <box>
-            <size>0.10888600534548366 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_40">
-      <pose>3.751085990045402 1.4437639039189119 0.001 0 0 -0.36451881386039137</pose>
+      <pose>1.7400437317784254 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_40">
         <geometry>
           <box>
-            <size>0.10520020374958597 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -941,18 +941,18 @@
       <collision name="path_collision_40">
         <geometry>
           <box>
-            <size>0.10520020374958597 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_41">
-      <pose>3.844966454358161 1.3994639796977675 0.001 0 0 -0.5188819489685802</pose>
+      <pose>1.780276967930029 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_41">
         <geometry>
           <box>
-            <size>0.10303491690583277 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -964,18 +964,18 @@
       <collision name="path_collision_41">
         <geometry>
           <box>
-            <size>0.10303491690583277 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_42">
-      <pose>3.934167504517565 1.3450977790661147 0.001 0 0 -0.5750491595614666</pose>
+      <pose>1.8197230320699707 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_42">
         <geometry>
           <box>
-            <size>0.10597341327047803 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -987,18 +987,18 @@
       <collision name="path_collision_42">
         <geometry>
           <box>
-            <size>0.10597341327047803 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_43">
-      <pose>4.026823189982659 1.2880640287958305 0.0010000000000000002 0 0 -0.5296845725462785</pose>
+      <pose>1.8599562682215742 0.0 0.0010000000000000002 0 0 0.0</pose>
       <visual name="path_visual_43">
         <geometry>
           <box>
-            <size>0.11168699249886033 0.25 0.002</size>
+            <size>0.04102040816326569 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1010,18 +1010,18 @@
       <collision name="path_collision_43">
         <geometry>
           <box>
-            <size>0.11168699249886033 0.25 0.002</size>
+            <size>0.04102040816326569 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_44">
-      <pose>4.126098683586069 1.2319447421456748 0.001 0 0 -0.4999425082006515</pose>
+      <pose>1.9016326530612244 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_44">
         <geometry>
           <box>
-            <size>0.1164171343841819 0.25 0.002</size>
+            <size>0.04233236151603448 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1033,18 +1033,18 @@
       <collision name="path_collision_44">
         <geometry>
           <box>
-            <size>0.1164171343841819 0.25 0.002</size>
+            <size>0.04233236151603448 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_45">
-      <pose>4.2303278173644365 1.1761582441729037 0.001 0 0 -0.48317835913356455</pose>
+      <pose>1.9444897959183671 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_45">
         <geometry>
           <box>
-            <size>0.12003013189156998 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1056,18 +1056,18 @@
       <collision name="path_collision_45">
         <geometry>
           <box>
-            <size>0.12003013189156998 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_46">
-      <pose>4.3378444233544045 1.120122859934773 0.001 0 0 -0.4777693624348411</pose>
+      <pose>1.988265306122449 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_46">
         <geometry>
           <box>
-            <size>0.12245609335747085 0.25 0.002</size>
+            <size>0.044169096209912384 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1079,18 +1079,18 @@
       <collision name="path_collision_46">
         <geometry>
           <box>
-            <size>0.12245609335747085 0.25 0.002</size>
+            <size>0.044169096209912384 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_47">
-      <pose>4.446982333592613 1.0632569144885382 0.001 0 0 -0.48289097822747734</pose>
+      <pose>2.0326967930029154 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_47">
         <geometry>
           <box>
-            <size>0.12367329144983094 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1102,18 +1102,18 @@
       <collision name="path_collision_47">
         <geometry>
           <box>
-            <size>0.12367329144983094 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_48">
-      <pose>4.556075380115706 1.004978732891455 0.001 0 0 -0.4983805545366218</pose>
+      <pose>2.0775218658892127 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_48">
         <geometry>
           <box>
-            <size>0.12370137876285116 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1125,18 +1125,18 @@
       <collision name="path_collision_48">
         <geometry>
           <box>
-            <size>0.12370137876285116 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_49">
-      <pose>4.663457394960325 0.9447066402007797 0.001 0 0 -0.5246714408949441</pose>
+      <pose>2.122478134110787 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_49">
         <geometry>
           <box>
-            <size>0.12260122238878884 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1148,18 +1148,18 @@
       <collision name="path_collision_49">
         <geometry>
           <box>
-            <size>0.12260122238878884 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_50">
-      <pose>4.767462210163113 0.8818589614737675 0.001 0 0 -0.5627773213044595</pose>
+      <pose>2.167303206997085 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_50">
         <geometry>
           <box>
-            <size>0.12048060556874728 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1171,18 +1171,18 @@
       <collision name="path_collision_50">
         <geometry>
           <box>
-            <size>0.12048060556874728 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_51">
-      <pose>4.866423657760709 0.8158540217676743 0.001 0 0 -0.614300662309671</pose>
+      <pose>2.211734693877551 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_51">
         <geometry>
           <box>
-            <size>0.11750606395973852 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1194,18 +1194,18 @@
       <collision name="path_collision_51">
         <geometry>
           <box>
-            <size>0.11750606395973852 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_52">
-      <pose>4.958675569789758 0.746110146139756 0.001 0 0 -0.6814191380172854</pose>
+      <pose>2.2555102040816326 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_52">
         <geometry>
           <box>
-            <size>0.11392162632953247 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1217,18 +1217,18 @@
       <collision name="path_collision_52">
         <geometry>
           <box>
-            <size>0.11392162632953247 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_53">
-      <pose>5.042551778286901 0.6720456596472684 0.001 0 0 -0.7667575167752214</pose>
+      <pose>2.2983673469387753 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_53">
         <geometry>
           <box>
-            <size>0.1100746550689623 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1240,18 +1240,18 @@
       <collision name="path_collision_53">
         <geometry>
           <box>
-            <size>0.1100746550689623 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_54">
-      <pose>5.116386115288779 0.5930788873474672 0.001 0 0 -0.8729733887344938</pose>
+      <pose>2.3400437317784255 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_54">
         <geometry>
           <box>
-            <size>0.10644579747630552 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1263,18 +1263,18 @@
       <collision name="path_collision_54">
         <geometry>
           <box>
-            <size>0.10644579747630552 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_55">
-      <pose>5.178512412832035 0.508628154297608 0.001 0 0 -1.001813545515365</pose>
+      <pose>2.380276967930029 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_55">
         <geometry>
           <box>
-            <size>0.10367165742689032 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1286,18 +1286,18 @@
       <collision name="path_collision_55">
         <geometry>
           <box>
-            <size>0.10367165742689032 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_56">
-      <pose>5.233119143941901 0.41913664161887365 0.001 0 0 -1.0435510256999958</pose>
+      <pose>2.419723032069971 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_56">
         <geometry>
           <box>
-            <size>0.10604637389032896 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1309,18 +1309,18 @@
       <collision name="path_collision_56">
         <geometry>
           <box>
-            <size>0.10604637389032896 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_57">
-      <pose>5.290198840208895 0.32634440980709584 0.0010000000000000002 0 0 -0.9963621600498712</pose>
+      <pose>2.4599562682215743 0.0 0.0010000000000000002 0 0 0.0</pose>
       <visual name="path_visual_57">
         <geometry>
           <box>
-            <size>0.11189944368505432 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1332,18 +1332,18 @@
       <collision name="path_collision_57">
         <geometry>
           <box>
-            <size>0.11189944368505432 0.25 0.002</size>
+            <size>0.041020408163265465 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_58">
-      <pose>5.353813518599988 0.2313746982602621 0.001 0 0 -0.9654893294432166</pose>
+      <pose>2.5016326530612245 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_58">
         <geometry>
           <box>
-            <size>0.1167416369445439 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1355,18 +1355,18 @@
       <collision name="path_collision_58">
         <geometry>
           <box>
-            <size>0.1167416369445439 0.25 0.002</size>
+            <size>0.04233236151603492 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_59">
-      <pose>5.422145263881917 0.13446190196779434 0.001 0 0 -0.9481124834426294</pose>
+      <pose>2.544489795918367 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_59">
         <geometry>
           <box>
-            <size>0.12042816523038323 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1378,18 +1378,18 @@
       <collision name="path_collision_59">
         <geometry>
           <box>
-            <size>0.12042816523038323 0.25 0.002</size>
+            <size>0.04338192419825093 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_60">
-      <pose>5.493376160821416 0.03584041591911431 0.001 0 0 -0.9425097478542732</pose>
+      <pose>2.588265306122449 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_60">
         <geometry>
           <box>
-            <size>0.12288360451144124 0.25 0.002</size>
+            <size>0.04416909620991216 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1401,18 +1401,18 @@
       <collision name="path_collision_60">
         <geometry>
           <box>
-            <size>0.12288360451144124 0.25 0.002</size>
+            <size>0.04416909620991216 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_61">
-      <pose>5.56568829418522 -0.06425536489635622 0.001 0 0 -0.9478147600770079</pose>
+      <pose>2.632696793002915 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_61">
         <geometry>
           <box>
-            <size>0.12408454930465274 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1424,18 +1424,18 @@
       <collision name="path_collision_61">
         <geometry>
           <box>
-            <size>0.12408454930465274 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_62">
-      <pose>5.637263748740061 -0.16559104548919543 0.001 0 0 -0.9638695195452016</pose>
+      <pose>2.677521865889213 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_62">
         <geometry>
           <box>
-            <size>0.12405216896767074 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1447,18 +1447,18 @@
       <collision name="path_collision_62">
         <geometry>
           <box>
-            <size>0.12405216896767074 0.25 0.002</size>
+            <size>0.044956268221574724 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_63">
-      <pose>5.706284609252673 -0.26793223086998147 0.001 0 0 -0.9911546441746637</pose>
+      <pose>2.722478134110787 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_63">
         <geometry>
           <box>
-            <size>0.12285213403306765 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1470,18 +1470,18 @@
       <collision name="path_collision_63">
         <geometry>
           <box>
-            <size>0.12285213403306765 0.25 0.002</size>
+            <size>0.04495626822157428 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_64">
-      <pose>5.770932960489792 -0.3710445260492925 0.001 0 0 -1.0307745191063913</pose>
+      <pose>2.7673032069970844 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_64">
         <geometry>
           <box>
-            <size>0.12060109195228903 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1493,18 +1493,18 @@
       <collision name="path_collision_64">
         <geometry>
           <box>
-            <size>0.12060109195228903 0.25 0.002</size>
+            <size>0.04469387755102039 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_65">
-      <pose>5.82939088721815 -0.47469353603770686 0.001 0 0 -1.0844674669843928</pose>
+      <pose>2.8117346938775514 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_65">
         <geometry>
           <box>
-            <size>0.11748003306306218 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1516,18 +1516,18 @@
       <collision name="path_collision_65">
         <geometry>
           <box>
-            <size>0.11748003306306218 0.25 0.002</size>
+            <size>0.044169096209912606 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_66">
-      <pose>5.879840474204481 -0.5786448658458028 0.001 0 0 -1.1545866340642297</pose>
+      <pose>2.8555102040816327 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_66">
         <geometry>
           <box>
-            <size>0.11375542912167595 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1539,18 +1539,18 @@
       <collision name="path_collision_66">
         <geometry>
           <box>
-            <size>0.11375542912167595 0.25 0.002</size>
+            <size>0.04338192419825049 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_67">
-      <pose>5.920463806215519 -0.6826641204841584 0.001 0 0 -1.2439411024767195</pose>
+      <pose>2.898367346938776 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_67">
         <geometry>
           <box>
-            <size>0.10980822752569246 0.25 0.002</size>
+            <size>0.042332361516035366 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1562,18 +1562,18 @@
       <collision name="path_collision_67">
         <geometry>
           <box>
-            <size>0.10980822752569246 0.25 0.002</size>
+            <size>0.042332361516035366 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_68">
-      <pose>5.9494429680179985 -0.7865169049633518 0.001 0 0 -1.3552929899004393</pose>
+      <pose>2.9400437317784256 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_68">
         <geometry>
           <box>
-            <size>0.10616670493212364 0.25 0.002</size>
+            <size>0.04102040816326502 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1585,18 +1585,18 @@
       <collision name="path_collision_68">
         <geometry>
           <box>
-            <size>0.10616670493212364 0.25 0.002</size>
+            <size>0.04102040816326502 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
     </link>
 
     <link name="path_segment_69">
-      <pose>5.964960044378653 -0.8899688242939612 0.001 0 0 -1.4902333908827512</pose>
+      <pose>2.9802769679300294 0.0 0.001 0 0 0.0</pose>
       <visual name="path_visual_69">
         <geometry>
           <box>
-            <size>0.10352867690422435 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
         <material>
@@ -1608,7 +1608,7 @@
       <collision name="path_collision_69">
         <geometry>
           <box>
-            <size>0.10352867690422435 0.25 0.002</size>
+            <size>0.03944606413994167 0.25 0.002</size>
           </box>
         </geometry>
       </collision>
@@ -1616,7 +1616,7 @@
 
     <include>
       <uri>model://sae/plataforma_com_circulo</uri>
-      <pose>5.969125821794367 -0.9415652682984423 0.001 0 0 0</pose>
+      <pose>3.0 0.0 0.001 0 0 0</pose>
     </include>
 
   </model>

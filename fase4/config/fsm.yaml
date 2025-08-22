@@ -8,6 +8,14 @@ fase4_fsm:
     # Takeoff parameters
     takeoff_height: -1.5
     max_vertical_velocity: 0.5
+    initial_takeoff_taken: false
+
+    # Circle detection parameters
+    has_ever_detected_circle: false
+    last_x_circle: 0.0
+    last_y_circle: 0.0
+    timeout_circle_detection: 10.0 # Timeout for circle detection
+    normalized_position_tolerance_circle_align: 0.05
 
     # Meia Volta Volver parameters
     yaw_tolerance: 0.087 # 5 graus em rad
@@ -22,22 +30,23 @@ fase4_fsm:
     max_yaw_rate: 1.0
     position_tolerance: 0.1
     max_angle_for_translation: 0.523 # 30 degrees in radians
+    angulo_muito_pequeno_seguir_reto: 0.34 # 20 degrees in radians (muito grande em relacao à vertical, mas faz 20 com a horizontal)
 
     # PID parameters for positioning (valores mais conservadores)
-    pid_pos_kp: 0.8
-    pid_pos_ki: 0.0  
-    pid_pos_kd: 0.4
+    pid_pos_kp: 2.0
+    pid_pos_ki: 0.0
+    pid_pos_kd: 0.5
     setpoint: 0.0
 
-    # Lane following PID - Controle lateral (alinhamento em X)
-    pid_lateral_kp: 1.2
+    # Lane following PID - Controle lateral (alinhamento em x)
+    pid_lateral_kp: 1.0
     pid_lateral_ki: 0.0
-    pid_lateral_kd: 1.0
+    pid_lateral_kd: 0.3
 
     # Lane following PID - Controle angular (alinhamento em theta)
-    pid_angular_kp: 0.8
+    pid_angular_kp: 1.0
     pid_angular_ki: 0.0
-    pid_angular_kd: 1.6
+    pid_angular_kd: 0.7
 
 fase4_vision:
   ros__parameters:

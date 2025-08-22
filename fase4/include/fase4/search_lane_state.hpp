@@ -37,13 +37,14 @@ public:
     }
 
     std::string act(fsm::Blackboard& bb) override {
-        (void) bb; // Evitar warning de parâmetro não usado
-
         auto lane_data = this->vision->getCurrentLaneData();
 
-        if(lane_data.area > 0 ){
+        if(lane_data.area > 0){
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);
-            return "LANE FOUND";
+            
+            bool voltar = *bb.get<bool>("has_ever_detected_circle");
+            if( ! (lane_data.is_circle && voltar))
+                return "LANE FOUND";
         }
             
         Eigen::Vector3d local_velocity(0.1f, 0.0f, 0.0f);

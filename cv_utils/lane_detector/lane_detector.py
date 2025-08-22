@@ -66,7 +66,7 @@ class LaneDetector(Node):
 			area = cv2.contourArea(maior_contorno)
 
 			lane_msg = LaneDirection()
-			if area > 15000:
+			if area > 10000:
 				cv2.drawContours(output_image, [maior_contorno], 0, (0, 255, 0), 3)
 
 				# técnica dos momentos de imagem

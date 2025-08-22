@@ -22,7 +22,10 @@ def calculate_direction_change(current_direction, curve_intensity, direction_pre
     Returns:
         Nova direção em radianos
     """
-    if direction_preference == 'spiral_left':
+    if direction_preference == 'straight':
+        # Linha reta: não muda a direção
+        direction_change = 0.0
+    elif direction_preference == 'spiral_left':
         # Espiral no sentido anti-horário
         direction_change = curve_intensity * 0.5
     elif direction_preference == 'spiral_right':
@@ -200,8 +203,8 @@ def main():
 
     # Novos parâmetros de direção
     parser.add_argument('--initial-direction', type=float, help='Direção inicial em graus (0=Norte, 90=Leste, 180=Sul, 270=Oeste)')
-    parser.add_argument('--direction-preference', type=str, choices=['north', 'south', 'east', 'west', 'spiral_left', 'spiral_right', 'zigzag', 'return', 'random'],
-                       help='Preferência direcional do caminho')
+    parser.add_argument('--direction-preference', type=str, choices=['north', 'south', 'east', 'west', 'spiral_left', 'spiral_right', 'zigzag', 'return', 'random', 'straight'],
+                       help='Preferência direcional do caminho (inclui "straight" para linha reta)')
 
     args = parser.parse_args()
 

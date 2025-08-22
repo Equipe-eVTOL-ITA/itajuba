@@ -112,20 +112,22 @@ interactive_path_generation() {
         esac
 
         # Padrão do caminho
-        echo ""
+
         echo "Padrão do caminho:"
         echo "  1) Aleatório (padrão)"
         echo "  2) Espiral esquerda"
         echo "  3) Espiral direita"
         echo "  4) Zigue-zague"
         echo "  5) Retorno"
-        read -p "Escolha (1-5): " pattern_choice
+        echo "  6) Linha reta"
+        read -p "Escolha (1-6): " pattern_choice
 
         case $pattern_choice in
             2) direction_preference="spiral_left" ;;
             3) direction_preference="spiral_right" ;;
             4) direction_preference="zigzag" ;;
             5) direction_preference="return" ;;
+            6) direction_preference="straight" ;;
             *) direction_preference="" ;;
         esac
 
@@ -165,8 +167,11 @@ quick_generation() {
         "return")
             generate_path 30 0.4 6 1.5 "1 1 0 1" "" "" "return"
             ;;
+        "straight")
+            generate_path 20 0.3 5 0.0 "0 0 1 1" "" "0" "straight"
+            ;;
         *)
-            echo "Presets disponíveis: simple, complex, zigzag, return"
+            echo "Presets disponíveis: simple, complex, zigzag, return, straight"
             return 1
             ;;
     esac
@@ -190,7 +195,7 @@ main() {
             echo ""
             echo "Modos:"
             echo "  interactive          Modo interativo (padrão)"
-            echo "  preset <nome>        Usar preset (simple, complex, zigzag, return)"
+            echo "  preset <nome>        Usar preset (simple, complex, zigzag, return, straight)"
             echo "  generate <args>      Geração direta com argumentos"
             echo "  help                 Mostra esta ajuda"
             echo ""
@@ -198,6 +203,7 @@ main() {
             echo "  $0                           # Modo interativo"
             echo "  $0 preset complex            # Caminho complexo"
             echo "  $0 preset zigzag             # Caminho zigue-zague"
+            echo "  $0 preset straight           # Caminho em linha reta"
             ;;
         *)
             echo "Modo inválido. Use 'help' para ver opções."
