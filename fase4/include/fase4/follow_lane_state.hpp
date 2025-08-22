@@ -97,7 +97,7 @@ public:
         int x_centroid_scaled = lane_data.x_centroid;
         float x_centroid_normalized = static_cast<float>(x_centroid_scaled) / 1000.0f;
         
-        int y_centroid_scaled = lane_data.y_centroid;
+        //int y_centroid_scaled = lane_data.y_centroid;
         //float y_centroid_normalized = static_cast<float>(y_centroid_scaled) / 1000.0f;
 
         if (abs(abs(drone->getAltitude()) - abs(height)) <= position_tolerance){
