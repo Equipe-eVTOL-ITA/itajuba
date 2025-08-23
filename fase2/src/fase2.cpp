@@ -9,6 +9,10 @@
 
 #include "fase2/arming_state.hpp"
 #include "fase2/takeoff_state.hpp"
+#include "fase2/aruco_search_state.hpp"
+#include "fase2/aruco_align_state.hpp"
+#include "fase2/aruco_traverse_state.hpp"
+#include "fase2/landing_state.hpp"
 
 template<typename DoubleHandler, typename StringHandler, typename BooleanHandler>
 std::map<std::string, std::variant<double, std::string, bool>> actOnBlackboardMap(
@@ -56,6 +60,10 @@ public:
 
         this->add_state("ARMING", std::make_unique<ArmingState>());
         this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
+        this->add_state("ARUCO TRAVERSE", std::make_unique<ArucoTraverseState>());
+        this->add_state("ARUCO ALIGN", std::make_unique<ArucoAlignState>());
+        this->add_state("ARUCO SEARCH", std::make_unique<ArucoSearchState>());
+        this->add_state("LANDING", std::make_unique<LandingState>());
 
         this->set_initial_state("ARMING");
 
@@ -68,6 +76,16 @@ public:
 
         this->add_transitions("TAKEOFF", {
             {"TAKEOFF COMPLETED", "ARUCO TRAVERSE"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("ARUCO ALIGN", {
+            {"ALIGNED", "ARUCO TRAVERSE"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("ARUCO TRAVERSE", {
+            {"NO MARKER", "SEARCH ARUCO"},
             {"SEG FAULT", "ERROR"}
         });
     }

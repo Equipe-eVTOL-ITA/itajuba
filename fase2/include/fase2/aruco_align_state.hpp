@@ -4,7 +4,7 @@
 #include "vision_fase2.hpp"
 #include "fase2/comandos.hpp"
 
-class ArucoTraverseState : public fsm::State {
+class ArucoAlignState : public fsm::State {
 private:
     std::shared_ptr<Drone> drone;
     std::shared_ptr<VisionNode> vision;
@@ -13,7 +13,7 @@ private:
     float height;
 
 public:
-    ArucoTraverseState() : fsm::State() {}
+    ArucoAlignState() : fsm::State() {}
 
 
 
@@ -26,7 +26,7 @@ public:
         this->drone = *drone_ptr;
         this->vision = *vision_ptr;
 
-        this->drone->log("STATE: ARUCO TRAVERSE");
+        this->drone->log("STATE: ARUCO ALIGN");
 
         this->max_velocity = *bb.get<float>("max_horizontal_velocity");
     }
@@ -35,15 +35,6 @@ public:
 
     std::string act(fsm::Blackboard &bb) override {
         (void) bb;
-
-        auto marker = this->vision->getCurrentMarker();
-
-        if (marker.dir == Direcoes::NENHUMA)
-            return "NO MARKER";
-
-        auto local_velocity = DIRECTIONS.at(marker.dir) * this->max_velocity;
-        this->drone->setLocalVelocity(local_velocity);
-
         return "";
     }
 };
