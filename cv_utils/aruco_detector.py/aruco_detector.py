@@ -29,15 +29,30 @@ class ArucoDetector(Node):
         self.aruco_params = cv2.aruco.DetectorParameters()
         self.detector = cv2.aruco.ArucoDetector(self.dicionario, self.aruco_params)
 
-        self.calibrate_camera()
+        # self.calibrate_camera_real()  # Para uso com câmera real
+        self.calibrate_camera_sim()     # Para uso em simulação
 
 
-    def calibrate_camera(self):
-        # (Trocar pela calibracao da camera: https://docs.opencv.org/4.x/dc/dbb/tutorial_py_calibration.html)
+
+    def calibrate_camera_real(self):
+        # Parâmetros reais (exemplo, troque pelos calibrados da sua câmera física)
         self.camera_matrix = np.array([[921.1707, 0, 459.9043],
-                                        [0, 919.0183, 351.2383],
-                                        [0, 0, 1]])
+                                       [0, 919.0183, 351.2383],
+                                       [0, 0, 1]])
         self.dist_coeffs = np.array([-0.033458, 0.105152, 0.001256, -0.004597, 0])
+
+    def calibrate_camera_sim(self):
+        # Parâmetros ideais para simulação (sem distorção)
+        width = 800  # ajuste conforme o SDF da câmera vertical
+        height = 800
+        fov = 1.047  # horizontal_fov 1.047 ajuste conforme o SDF da sua câmera vertical
+        fx = fy = 0.5 * width / np.tan(0.5 * fov)
+        cx = width / 2
+        cy = height / 2
+        self.camera_matrix = np.array([[fx, 0, cx],
+                                       [0, fy, cy],
+                                       [0,  0,  1]])
+        self.dist_coeffs = np.zeros(5)
 
 
     def aruco_detection_callback(self, msg):
@@ -49,7 +64,11 @@ class ArucoDetector(Node):
         detection_msg = ArucoMarkerMsg()
         if ids is not None:
             cv2.aruco.drawDetectedMarkers(cv_image, corners, ids)
-            rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, self.tamanho_real, self.camera_matrix, self.dist_coeffs)
+            # Checa se a função está disponível
+            if hasattr(cv2.aruco, 'estimatePoseSingleMarkers'):
+                rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, self.tamanho_real, self.camera_matrix, self.dist_coeffs)
+            else:
+                raise RuntimeError("Sua instalação do OpenCV não possui o módulo aruco completo. Instale com: pip install opencv-contrib-python")
 
             for i in range(len(ids)):
                 cv2.drawFrameAxes(cv_image, self.camera_matrix, self.dist_coeffs, rvecs[i], tvecs[i], 0.03)
@@ -62,7 +81,7 @@ class ArucoDetector(Node):
                 pose_msg.position.z = float(tvecs[i][0][2])
                 # Para orientação, converter rvec para quaternion
                 rot_matrix, _ = cv2.Rodrigues(rvecs[i][0])
-                qw = math.sqrt(1.0 + rot_matrix[0,0] + rot_matrix[1,1] + rot_matrix[2,2]) / 2.0
+                qw = math.sqrt(max(0.0, 1.0 + rot_matrix[0,0] + rot_matrix[1,1] + rot_matrix[2,2])) / 2.0
                 qx = (rot_matrix[2,1] - rot_matrix[1,2]) / (4.0 * qw)
                 qy = (rot_matrix[0,2] - rot_matrix[2,0]) / (4.0 * qw)
                 qz = (rot_matrix[1,0] - rot_matrix[0,1]) / (4.0 * qw)
