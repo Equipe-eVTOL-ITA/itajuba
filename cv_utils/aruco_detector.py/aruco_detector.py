@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import CompressedImage
-from custom_msgs.msg import ArucoDetection
+from custom_msgs.msg import ArucoMarkerMsg
 from geometry_msgs.msg import Pose
 from cv_bridge import CvBridge
 
@@ -13,7 +13,7 @@ class ArucoDetector(Node):
     def __init__(self):
         super().__init__('aruco_detector')
 
-        self._publisher = self.create_publisher(ArucoDetection, 'aruco_detection', 10)
+        self._publisher = self.create_publisher(ArucoMarkerMsg, 'aruco_detection', 10)
         
         self._subscriber = self.create_subscription(
             CompressedImage,
@@ -46,7 +46,7 @@ class ArucoDetector(Node):
 
         corners, ids, rejected = self.detector.detectMarkers(cv_image)
 
-        detection_msg = ArucoDetection()
+        detection_msg = ArucoMarkerMsg()
         if ids is not None:
             cv2.aruco.drawDetectedMarkers(cv_image, corners, ids)
             rvecs, tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(corners, self.tamanho_real, self.camera_matrix, self.dist_coeffs)
@@ -74,4 +74,28 @@ class ArucoDetector(Node):
 
                 detection_msg.confidences.append(1.0)
 
+                pts = corners[i][0].astype(int)
+                cv2.polylines(cv_image, [pts], isClosed=True, color=(0,255,0), thickness=2)
+
+                cX = int(np.mean(pts[:,0]))
+                cY = int(np.mean(pts[:,1]))
+
+                cv2.putText(cv_image, f"ID:{ids[i][0]}", (cX-20, cY-10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 2)
+                cv2.circle(cv_image, (cX, cY), 4, (255,0,0), -1)
+                cv2.putText(cv_image, f"({cX},{cY})", (cX+10, cY+10), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255,0,0), 1)
+
+        # Exibir imagem com OpenCV
+        cv2.imshow("Aruco Detection", cv_image)
+        cv2.waitKey(1)
+
         self._publisher.publish(detection_msg)
+
+def main(args=None):
+    rclpy.init(args=args)
+    ad = ArucoDetector()
+    rclpy.spin(ad)
+    ad.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
