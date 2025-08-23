@@ -24,7 +24,11 @@ fase4_fsm:
     # Landing parameters
     landing_velocity: 0.3
     landing_timeout: 10.0
-    
+    has_ever_landed: false
+
+    # garra
+    command_to_drop_script: "echo ESTOU SOLTANDO A GARRA!!" #"python3 /home/evtol/frtl_2025_ws/src/scripts/gancho_drop.py open"
+
     # Lane following parameters
     max_horizontal_velocity: 0.5
     max_yaw_rate: 1.0

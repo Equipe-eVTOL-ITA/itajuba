@@ -15,6 +15,7 @@
 #include "fase4/landing_state.hpp"
 #include "fase4/search_lane_state.hpp"
 #include "fase4/meia_volta_volver_state.hpp"
+#include "fase4/soltar_garra_state.hpp"
 
 
 template<typename DoubleHandler, typename StringHandler, typename BooleanHandler>
@@ -72,6 +73,7 @@ public:
         this->add_state("LAND", std::make_unique<LandingState>());
         this->add_state("SEARCH LANE", std::make_unique<SearchLaneState>());
         this->add_state("MEIA VOLTA VOLVER", std::make_unique<MeiaVoltaVolverState>());
+        this->add_state("SOLTAR O PACOTE", std::make_unique<SoltarGarraState>());
 
         this->set_initial_state("ARMING");
 
@@ -95,7 +97,7 @@ public:
 
         this->add_transitions("FOLLOW LANE", {
             {"CIRCLE DETECTED", "ALIGN WITH CIRCLE"},
-            {"ANGLE TOO LARGE", "LAND"},
+            {"BASE DETECTED", "LAND"},
             {"LANE LOST", "SEARCH LANE"},
             {"SEG FAULT", "ERROR"}
         });
@@ -108,7 +110,13 @@ public:
         });
 
         this->add_transitions("LAND", {
-            {"LANDED", "TAKEOFF"},
+            {"LANDED FOR THE FIRST TIME", "SOLTAR O PACOTE"},
+            {"LANDED", "FINISHED"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("SOLTAR O PACOTE", {
+            {"PACOTE ENTREGUE", "TAKEOFF"},
             {"SEG FAULT", "ERROR"}
         });
 
@@ -160,7 +168,9 @@ public:
             {"last_x_circle", 0.0},
             {"last_y_circle", 0.0},
             {"timeout_circle_detection", 10.0}, // Timeout para circle detection
-            {"normalized_position_tolerance_circle_align", 0.05}
+            {"normalized_position_tolerance_circle_align", 0.05},
+            {"has_ever_landed", false},
+            {"command_to_drop_script", ""}
         };
 
         // Create and configure FSM with parameters

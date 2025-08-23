@@ -116,7 +116,7 @@ class LaneDetector(Node):
 
 					lane_msg.lost = False
 
-					is_circle, confidence, metrics = self.analyze_shape(maior_contorno, area)
+					is_circle, confidence, metrics = self.isCircle(maior_contorno, area)
 					lane_msg.is_circle = is_circle
 
 					print(f"Lane Direction - Theta: {lane_msg.theta:.2f}, X: {lane_msg.x_centroid}, Y: {lane_msg.y_centroid}")
@@ -139,7 +139,7 @@ class LaneDetector(Node):
 		cv2.imshow('Lane Detection', output_image)
 		cv2.waitKey(1)
 
-	def analyze_shape(self, contour, area):
+	def isCircle(self, contour, area):
 		"""
 		Analisa se o contorno é um círculo usando múltiplas técnicas
 		Retorna: (is_circle, confidence, metrics)
@@ -186,7 +186,6 @@ class LaneDetector(Node):
 		is_circle = confidence >= 0.67  # Pelo menos 2 de 3 testes passaram
 		
 		return is_circle, confidence, metrics
-
 
 def main(args=None):
 	rclpy.init(args=args)

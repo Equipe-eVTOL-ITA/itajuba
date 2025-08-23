@@ -85,18 +85,25 @@ public:
 
         if(lane_data.is_circle){
             bb.set<bool>("has_ever_detected_circle", true);
-            bb.set<float>("last_x_circle", lane_data.x_centroid);
-            bb.set<float>("last_y_circle", lane_data.y_centroid);
+            bb.set<float>("last_x", lane_data.x_centroid);
+            bb.set<float>("last_y", lane_data.y_centroid);
             return "CIRCLE DETECTED";
         }
+
 
         float theta = lane_data.theta; // entre -pi/2 e pi/2, mas pi/2 e -pi/2 são a mesma direção (vertical)
 
         int x_centroid_scaled = lane_data.x_centroid;
-        //int y_centroid_scaled = lane_data.y_centroid;
+        int y_centroid_scaled = lane_data.y_centroid;
         
         float x_centroid_normalized = static_cast<float>(x_centroid_scaled) / 1000.0f;
-        //float y_centroid_normalized = static_cast<float>(y_centroid_scaled) / 1000.0f;
+        float y_centroid_normalized = static_cast<float>(y_centroid_scaled) / 1000.0f;
+
+        bool voltando = *bb.get<bool>("has_ever_detected_circle");
+        if(voltando) {
+            if(y_centroid_normalized > 0.0f && y_centroid_normalized < 0.1f)
+                return "BASE DETECTED";
+        }
 
         if(!this->vision->isLaneDetected()) {
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f);

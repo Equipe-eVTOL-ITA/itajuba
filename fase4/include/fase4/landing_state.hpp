@@ -39,8 +39,13 @@ public:
         auto current_time = std::chrono::steady_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time-this->start_time_).count();
 
-        if(elapsed_time > this->landing_timeout)
+        if(elapsed_time > this->landing_timeout){
+            if(*bb.get<bool>("has_ever_landed") == false){
+                bb.set<bool>("has_ever_landed", true);
+                return "LANDED FOR THE FIRST TIME";
+            }
             return "LANDED";
+        }
 
         this->drone->setLocalVelocity(0.0, 0.0, this->landing_velocity, 0.0);
 
