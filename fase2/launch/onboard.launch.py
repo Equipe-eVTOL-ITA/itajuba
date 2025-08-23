@@ -13,13 +13,13 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    pkg_fase2       = get_package_share_directory('itajuba_fase2')
-    onboard_params  = os.path.join(pkg_fase2, "config", "onboard.yaml")
-    fsm_params     = os.path.join(pkg_fase2, "config", "fsm.yaml")
+    pkg_fase4       = get_package_share_directory('itajuba_fase4')
+    onboard_params  = os.path.join(pkg_fase4, "config", "onboard.yaml")
+    fsm_params     = os.path.join(pkg_fase4, "config", "fsm.yaml")
 
     exec_arg = DeclareLaunchArgument(
         "mission",
-        default_value="fase2",
+        default_value="fase4",
         description="Executable that implements the mission FSM")
     
 
@@ -47,16 +47,8 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Base detector node
-    base_detector_node = Node(
-        package='cbr_cv_utils',
-        executable='base_detector',
-        parameters=[onboard_params],
-        output='screen'
-    )
-
     fsm_node = Node(
-        package='itajuba_fase2',
+        package='itajuba_fase4',
         executable=LaunchConfiguration("mission"),
         parameters=[fsm_params],
         output='screen'
@@ -67,8 +59,6 @@ def generate_launch_description():
     return LaunchDescription([
         exec_arg,
         system_health_node,
-        telemetry_recorder_node,        
-        # camera_node,
-        base_detector_node,
+        telemetry_recorder_node,
         delayed_fsm_node
     ])

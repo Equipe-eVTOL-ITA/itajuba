@@ -35,7 +35,7 @@ setup(
         'console_scripts': [
             #'yolo_classifier = yolo_classifier.yolo_classifier:main',
             #'barcode = barcode_detector.oak_bar:main',
-            'lane = lane_detector.lane_detector:main' # ros2 run itajuba_cv_utils lane
+            'aruco = aruco_detector.aruco_detector:main' # ros2 run itajuba_cv_utils aruco
                     #  pasta       arquvivo.py  funcao no arquivo
         ],
     }

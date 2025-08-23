@@ -14,14 +14,14 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    pkg_fase2       = get_package_share_directory('itajuba_fase2')
-    simulation_params  = os.path.join(pkg_fase2, "config", "simulation.yaml")
-    fsm_params     = os.path.join(pkg_fase2, "config", "fsm.yaml")
-    rviz_cfg = os.path.join(pkg_fase2, 'launch', 'simulation.rviz')
+    pkg_fase4       = get_package_share_directory('itajuba_fase4')
+    simulation_params  = os.path.join(pkg_fase4, "config", "simulation.yaml")
+    fsm_params     = os.path.join(pkg_fase4, "config", "fsm.yaml")
+    rviz_cfg = os.path.join(pkg_fase4, 'launch', 'simulation.rviz')
 
     exec_arg = DeclareLaunchArgument(
         "mission",
-        default_value="fase2",
+        default_value="fase4",
         description="Executable that implements the mission FSM")
     
     # Telemetry Handler - core telemetry processing
@@ -64,16 +64,8 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Base detector node
-    base_detector_node = Node(
-        package='cbr_cv_utils',
-        executable='base_detector',
-        parameters=[simulation_params],
-        output='screen'
-    )
-
     fsm_node = Node(
-        package='itajuba_fase2',
+        package='itajuba_fase4',
         executable=LaunchConfiguration("mission"),
         parameters=[fsm_params],
         output='screen'
@@ -87,7 +79,6 @@ def generate_launch_description():
         telemetry_dashboard_node,
         telemetry_recorder_node,
         rviz_node,
-        system_health_node,        
-        base_detector_node,
+        system_health_node,
         delayed_fsm_node
     ])

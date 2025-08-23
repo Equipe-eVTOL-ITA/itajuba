@@ -1,54 +1,29 @@
-fase2_fsm:
+fase4_fsm:
   ros__parameters:
-    fictual_home_x: 1.0
-    fictual_home_y: -1.0
-    fictual_home_z: -0.6 # Remember z points Down
+    # Home position parameter
+    fictual_home_x: 0.0
+    fictual_home_y: 0.0
+    fictual_home_z: 0.0 # Remember z points Down
 
-    package_1_x: 3.0
-    package_1_y: -1.0
-
-    package_2_x: 5.0
-    package_2_y: -1.0
-
-    package_3_x: 7.0
-    package_3_y: -1.0
-
-    delivery_1_x: 1.0
-    delivery_1_y: -4.0
-
-    delivery_2_x: 4.25
-    delivery_2_y: -6.0
-
-    delivery_3_x: 6.5
-    delivery_3_y: -7.0
-
-    takeoff_height: -3.0
-    align_package_height: -2.0
-    package_height: -1.5
-    delivery_height: 0.0
-
-    max_vertical_velocity: 1.0
-    max_horizontal_velocity: 1.0
-    descent_velocity: 0.15
-    landing_velocity: 0.5 # Positive value
-
-    garra_timeout: 5.0
-    detection_timeout: 10.0
-    landing_timeout: 7.0
-
-    position_tolerance: 0.07
-    align_base_tolerance: 0.05
-    align_package_tolerance: 0.02
-
-    pid_pos_kp: 1.0
-    pid_pos_ki: 0.01
-    pid_pos_kd: 0.05
+    # Takeoff parameters
+    takeoff_height: -1.5
+    max_vertical_velocity: 0.5
+    
+    # Landing parameters
+    landing_velocity: 0.3
+    landing_timeout: 10.0
+    
+    # Moviment params
+    max_horizontal_velocity: 0.5
+    max_yaw_rate: 1.0
+    position_tolerance: 0.1
+    
+    # PID parameters for positioning (valores mais conservadores)
+    pid_pos_kp: 2.0
+    pid_pos_ki: 0.0
+    pid_pos_kd: 0.5
     setpoint: 0.0
 
-    known_base_radius: 1.5
-    height_to_ground: 1.2
-    # -------------------------------------
-
-fase2_vision:
+fase4_vision:
   ros__parameters:
     timeout: 10.0
