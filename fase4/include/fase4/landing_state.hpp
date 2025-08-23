@@ -52,4 +52,10 @@ public:
         return "";
     }
 
+    void on_exit(fsm::Blackboard &bb) override {
+        (void) bb;
+        this->drone->setLocalVelocity(0.0, 0.0, 0.0, 0.0);
+        this->drone->log("Exiting Landing State");
+    }
+
 };

@@ -170,7 +170,8 @@ public:
             {"timeout_circle_detection", 10.0}, // Timeout para circle detection
             {"normalized_position_tolerance_circle_align", 0.05},
             {"has_ever_landed", false},
-            {"command_to_drop_script", ""}
+            {"command_to_drop", ""},
+            {"has_ever_detected_base", false}
         };
 
         // Create and configure FSM with parameters

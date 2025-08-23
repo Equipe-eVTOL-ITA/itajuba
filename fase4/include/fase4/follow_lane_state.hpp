@@ -85,8 +85,8 @@ public:
 
         if(lane_data.is_circle){
             bb.set<bool>("has_ever_detected_circle", true);
-            bb.set<float>("last_x", lane_data.x_centroid);
-            bb.set<float>("last_y", lane_data.y_centroid);
+            bb.set<float>("last_x_circle", lane_data.x_centroid);
+            bb.set<float>("last_y_circle", lane_data.y_centroid);
             return "CIRCLE DETECTED";
         }
 
@@ -101,8 +101,11 @@ public:
 
         bool voltando = *bb.get<bool>("has_ever_detected_circle");
         if(voltando) {
-            if(y_centroid_normalized > 0.0f && y_centroid_normalized < 0.1f)
+            this->drone->log("Y: "+std::to_string(y_centroid_normalized));
+            if(y_centroid_normalized > 0.7f){ // controlar essa porcentagem faz escolher quando pousar certinho na base
+                bb.set<bool>("has_ever_detected_base", true);
                 return "BASE DETECTED";
+            }
         }
 
         if(!this->vision->isLaneDetected()) {

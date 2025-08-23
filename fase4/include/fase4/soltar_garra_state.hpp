@@ -8,19 +8,28 @@
 #include <chrono>
 
 class SoltarGarraState : public fsm::State {
+private:
+    std::shared_ptr<Drone> drone;
+    std::chrono::steady_clock::time_point start_time;
+    int i;
+
 public:
     SoltarGarraState() : fsm::State() {}
 
-    void on_enter(fsm::Blackboard &blackboard) override {
-        drone = blackboard.get<Drone>("drone");
-        
-        if (drone == nullptr)
-            return;
-        
-        drone->log("STATE: SOLTAR GARRA");
+    void on_enter(fsm::Blackboard &bb) override {
+        auto drone_ptr = bb.get<std::shared_ptr<Drone>>("drone");
 
-        start_time = std::chrono::steady_clock::now();
-        i = 0;
+        if(drone_ptr == nullptr){
+            this->drone->log("ERROR: Drone pointer is null in SoltarGarraState");
+            return;
+        }
+
+        this->drone = *drone_ptr;
+
+        this->drone->log("STATE: SOLTAR GARRA");
+
+        this->start_time = std::chrono::steady_clock::now();
+        this->i = 0;
     }
 
     std::string act(fsm::Blackboard &bb) override {
@@ -30,7 +39,8 @@ public:
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(current_time - start_time);
         
         if (i% 5 == 0){
-            int ret = std::system(*bb.get<const char*>("command_to_drop_script"));
+            std::string cmd = *bb.get<std::string>("command_to_drop");
+            int ret = std::system(cmd.c_str());
             drone->log("gancho_drop.py returned " + std::to_string(ret));
         }
         
@@ -47,9 +57,4 @@ public:
         (void)blackboard;
         drone->log("Exiting DROP GANCHO state - Claw opened successfully");
     }
-
-private:
-    Drone* drone;
-    std::chrono::steady_clock::time_point start_time;
-    int i;
 };
