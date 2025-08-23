@@ -9,6 +9,9 @@ private:
     std::shared_ptr<Drone> drone;
     std::shared_ptr<VisionNode> vision;
 
+    ArucoMarker marker;
+    ArucoMarker first_marker;
+
     float max_velocity;
     float height;
 
@@ -29,6 +32,10 @@ public:
         this->drone->log("STATE: ARUCO TRAVERSE");
 
         this->max_velocity = *bb.get<float>("max_horizontal_velocity");
+        this->height = *bb.get<float>("takeoff_height");
+
+        this->first_marker = this->vision->getCurrentMarker();
+
     }
 
 
@@ -42,7 +49,10 @@ public:
             return "NO MARKER";
 
         auto local_velocity = DIRECTIONS.at(marker.dir) * this->max_velocity;
-        this->drone->setLocalVelocity(local_velocity);
+        this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
+
+        if(marker.dir != this->first_marker.dir)
+            return "DIFFERENT MARKER";
 
         return "";
     }

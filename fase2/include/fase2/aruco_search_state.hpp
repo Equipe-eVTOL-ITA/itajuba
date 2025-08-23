@@ -3,11 +3,14 @@
 #include "drone/Drone.hpp"
 #include "vision_fase2.hpp"
 #include "fase2/comandos.hpp"
+#include "transformations.hpp"
 
 class ArucoSearchState : public fsm::State {
 private:
     std::shared_ptr<Drone> drone;
     std::shared_ptr<VisionNode> vision;
+
+    ArucoMarker marker;
 
     float max_velocity;
     float height;
@@ -35,6 +38,14 @@ public:
 
     std::string act(fsm::Blackboard &bb) override {
         (void) bb;
-        return "";
+
+        this->marker = this->vision->getCurrentMarker();
+        if(this->marker.dir == Direcoes::NENHUMA){
+            Eigen::Vector3d local_velocity = adjust_velocity_using_yaw(DIRECTIONS.at(Direcoes::FRENTE), this->drone->getOrientation()[2]);
+            this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
+            return "";
+        }
+        
+        return "MARKER DETECTED";
     }
 };

@@ -5,6 +5,10 @@ fase4_fsm:
     fictual_home_y: 0.0
     fictual_home_z: 0.0 # Remember z points Down
 
+    # Aruco alignment parameters
+    timeout_aruco_align: 5.0
+    normalized_position_tolerance: 0.1
+
     # Takeoff parameters
     takeoff_height: -1.5
     max_vertical_velocity: 0.5

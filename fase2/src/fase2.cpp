@@ -5,7 +5,7 @@
 #include "fsm/fsm.hpp"
 #include <rclcpp/rclcpp.hpp>
 #include "drone/Drone.hpp"
-#include "fase2/vision_fase4.hpp"
+#include "fase2/vision_fase2.hpp"
 
 #include "fase2/arming_state.hpp"
 #include "fase2/takeoff_state.hpp"
@@ -75,17 +75,33 @@ public:
         });
 
         this->add_transitions("TAKEOFF", {
-            {"TAKEOFF COMPLETED", "ARUCO TRAVERSE"},
+            {"TAKEOFF COMPLETED", "ARUCO SEARCH"},
+            {"TAKEOFF FAILED", "ERROR"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("ARUCO SEARCH", {
+            {"MARKER DETECTED", "ARUCO ALIGN"},
+            {"SEARCH TIMEOUT", "LANDING"},
             {"SEG FAULT", "ERROR"}
         });
 
         this->add_transitions("ARUCO ALIGN", {
             {"ALIGNED", "ARUCO TRAVERSE"},
+            {"TIMEOUT", "LANDING"},
+            {"NO MARKER", "LANDING"},
             {"SEG FAULT", "ERROR"}
         });
 
         this->add_transitions("ARUCO TRAVERSE", {
-            {"NO MARKER", "SEARCH ARUCO"},
+            {"DIFFERENT MARKER", "ALIGN ARUCO"},
+            {"POUSAR", "LANDING"},
+            {"SEG FAULT", "ERROR"}
+        });
+
+        this->add_transitions("LANDING", {
+            {"LANDED", "FINISHED"},
+            {"LANDING FAILED", "ERROR"},
             {"SEG FAULT", "ERROR"}
         });
     }
@@ -113,6 +129,9 @@ public:
             {"max_horizontal_velocity", 0.5},
             {"max_yaw_rate", 1.0},
             {"position_tolerance", 0.1},
+
+            {"timeout_aruco_align", 5.0},
+            {"normalized_position_tolerance", 0.1},
 
             {"pid_pos_kp", 2.0},
             {"pid_pos_ki", 0.0},
