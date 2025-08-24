@@ -41,11 +41,11 @@ public:
 
         this->marker = this->vision->getCurrentMarker();
         if(this->marker.dir == Direcoes::NENHUMA){
-            Eigen::Vector3d local_velocity = adjust_velocity_using_yaw(DIRECTIONS.at(Direcoes::FRENTE), this->drone->getOrientation()[2]);
+            this->drone->log("No marker detected, moving forward");
+            Eigen::Vector3d local_velocity = adjust_velocity_using_yaw(get_direction_vector(Direcoes::FRENTE), this->drone->getOrientation()[2]);
             this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
             return "";
         }
-        
         return "MARKER DETECTED";
     }
 };

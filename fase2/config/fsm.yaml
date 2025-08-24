@@ -6,8 +6,8 @@ fase4_fsm:
     fictual_home_z: 0.0 # Remember z points Down
 
     # Aruco alignment parameters
-    timeout_aruco_align: 5.0
-    normalized_position_tolerance: 0.1
+    timeout_aruco_align: 15.0
+    normalized_position_tolerance: 0.3 # Tolerance for aruco alignment
 
     # Takeoff parameters
     takeoff_height: -1.5
@@ -23,9 +23,9 @@ fase4_fsm:
     position_tolerance: 0.1
     
     # PID parameters for positioning (valores mais conservadores)
-    pid_pos_kp: 2.0
+    pid_pos_kp: 1.0
     pid_pos_ki: 0.0
-    pid_pos_kd: 0.5
+    pid_pos_kd: 0.0
     setpoint: 0.0
 
 fase4_vision:
