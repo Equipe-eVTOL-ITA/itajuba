@@ -1,4 +1,4 @@
-fase1_fsm:
+fase3_fsm:
   ros__parameters:
     fictual_home_x: 1.0
     fictual_home_y: -1.0
@@ -17,8 +17,8 @@ fase1_fsm:
 
     takeoff_height: -3.5
     align_height:  -2.7
-    max_base_height: -1.5
-    mean_base_height: -0.75
+    max_base_height: 0.0
+    mean_base_height: 0.0
 
     max_vertical_velocity: 1.2
     max_horizontal_velocity: 1.0
@@ -37,7 +37,7 @@ fase1_fsm:
     pid_pos_kd: 0.05
     setpoint: 0.0
 
-fase1_vision:
+fase3_vision:
   ros__parameters:
     timeout: 10.0
 

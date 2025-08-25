@@ -15,10 +15,8 @@ setup(
             ['resource/' + package_name]),
         # Install package.xml
         ('share/' + package_name, ['package.xml']),
-        # Install launch files (if they exist)
-        (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
-        # Install config files (if they exist)
-        (os.path.join('share', package_name, 'config'), glob('config/*')),
+        # Install fase3 YAML config file
+        (os.path.join('share', package_name, 'fase3'), glob('fase3/*.yaml')),
     ],
     install_requires=['setuptools'], #, 'ultralytics'],
     zip_safe=True,
@@ -35,7 +33,8 @@ setup(
         'console_scripts': [
             #'yolo_classifier = yolo_classifier.yolo_classifier:main',
             #'barcode = barcode_detector.oak_bar:main',
-            'aruco = aruco_detector.aruco_detector:main' # ros2 run itajuba_cv_utils aruco
+            'aruco = aruco_detector.aruco_detector:main', # ros2 run itajuba_cv_utils aruco
+            'fase3_color_detector = fase3.fase3_color_detector:main'  # Added color detector
                     #  pasta       arquvivo.py  funcao no arquivo
         ],
     }

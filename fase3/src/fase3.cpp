@@ -140,6 +140,9 @@ public:
             {"AT HOME", "FINISHED"},
             {"SEG FAULT", "ERROR"}
         });
+
+        // Set initial state - CRITICAL for proper FSM startup
+        this->set_initial_state("INITIAL TAKEOFF");
     }
 
 };
