@@ -4,15 +4,15 @@ fase1_fsm:
     fictual_home_y: -1.0
     fictual_home_z: -0.6      # FRD: z positive is DOWN
 
-    num_bases: 6.0
+    num_bases: 3.0
     known_base_radius: 1.7
 
     # Kept for the FSM logic; NOT used inside vision anymore
     height_to_ground: 1.1
 
     # Flight profile
-    grid_y_length: -6.0
-    grid_step_x: 2.0
+    grid_y_length: -3.3
+    grid_step_x: 3.3
     grid_num_steps: 3.0
 
     takeoff_height: -3.5

@@ -36,45 +36,61 @@ public:
             }
         }
         
-        // DYNAMIC GRID ----------------------------------------------------
+    // DYNAMIC GRID ----------------------------------------------------
+    float takeoff_height = *this->blackboard_get<float>("takeoff_height");
+    float home_x = *this->blackboard_get<float>("fictual_home_x");
+    float home_y = *this->blackboard_get<float>("fictual_home_y");
+    float step_size = *this->blackboard_get<float>("grid_step_x"); // Using this as spiral step size
 
-        float takeoff_height = *this->blackboard_get<float>("takeoff_height");
-        float home_x = *this->blackboard_get<float>("fictual_home_x");
-        float home_y = *this->blackboard_get<float>("fictual_home_y");
-        float y_length = *this->blackboard_get<float>("grid_y_length");
-        float step_x = *this->blackboard_get<float>("grid_step_x");
-        float num_steps = *this->blackboard_get<float>("grid_num_steps");
+    // Create a spiral square with 9 points (1 loop)
+    std::vector<ArenaPoint> waypoints;
 
-        int state = 0;
-        int num_steps_taken = 0;
-        bool finished = false;
-        float x_coord = home_x;
-        float y_coord = home_y;
+    // Starting point (center)
+    waypoints.push_back({Eigen::Vector3d({home_x, home_y, takeoff_height})});
 
-        std::vector<ArenaPoint> waypoints;
-        while (num_steps_taken < num_steps || !finished) {
-            if (state % 4 == 0) {
-                // Go left
-                y_coord = home_y + y_length;
-                finished = true;
-            } else if (state % 4 == 1 || state % 4 == 3) {
-                // Go front
-                x_coord += step_x;
-                num_steps_taken++;
-                finished = false;
-            } else {
-                // Go right
-                y_coord = home_y;
-                finished = true;
+    // Direction vectors for the spiral: right, up, left, down
+    const std::vector<std::pair<int, int>> directions = {
+        {1, 0},  // right
+        {0, 1},  // up
+        {-1, 0}, // left
+        {0, -1}  // down
+    };
+
+    int x = 0;
+    int y = 0;
+    int dir = 0;        // Start by going right
+    int segment_length = 1; // Initial segment length
+    int steps_taken = 0;
+
+    // We need 8 more points after the center (total of 9)
+    for (int i = 0; i < 8; i++) {
+        // Move in current direction
+        x += directions[dir].first;
+        y += directions[dir].second;
+        
+        // Add waypoint
+        float x_coord = home_x + x * step_size;
+        float y_coord = home_y + y * step_size;
+        waypoints.push_back({Eigen::Vector3d({x_coord, y_coord, takeoff_height})});
+        
+        // Track steps taken in current segment
+        steps_taken++;
+        
+        // Check if we need to change direction
+        if (steps_taken == segment_length) {
+            dir = (dir + 1) % 4; // Change direction (right->up->left->down)
+            steps_taken = 0;     // Reset steps counter
+            
+            // Increase segment length after completing a half-loop (two segments)
+            if (dir % 2 == 0) {
+                segment_length++;
             }
-            state++;
-            waypoints.push_back({Eigen::Vector3d({x_coord, y_coord, takeoff_height})});
         }
-        this->blackboard_set<std::vector<ArenaPoint>>("waypoints", waypoints);
-        this->blackboard_set<bool>("finished_bases", false);
+    }
 
-        // ------------------------------------------------------------------
-
+    this->blackboard_set<std::vector<ArenaPoint>>("waypoints", waypoints);
+    this->blackboard_set<bool>("finished_bases", false);
+    // ------------------------------------------------------------------
 
         // STATE MACHINE ----------------------------------------------------
 
