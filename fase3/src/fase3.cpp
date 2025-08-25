@@ -21,11 +21,13 @@ public:
     fase3FSM(
         std::shared_ptr<Drone> drone,
         std::shared_ptr<VisionNode> vision,
-        const std::map<std::string, std::variant<double, std::string>>& params
+        const std::map<std::string, std::variant<double, std::string>>& params,
+        const std::vector<std::string>& target_shapes
     ) : fsm::FSM({"ERROR", "FINISHED"}) {
         
         this->blackboard_set<std::shared_ptr<Drone>>("drone", drone);
         this->blackboard_set<std::shared_ptr<VisionNode>>("vision", vision);
+        this->blackboard_set<std::vector<std::string>>("target_shapes", target_shapes);
 
         // Parametros de ROS 2
         for (const auto& [key, value] : params) {
@@ -159,18 +161,18 @@ public:
             {"fictual_home_y", -1.0},
             {"fictual_home_z", -0.6},
 
-            {"num_bases", 6.0},
-            {"known_base_radius", 1.5},
-            {"height_to_ground", 1.2},
+            {"num_bases", 3.0},
+            {"known_base_radius", 1.7},
+            {"height_to_ground", 1.1},
             
-            {"grid_y_length", -6.0},
-            {"grid_step_x", 2.0},
+            {"grid_y_length", -3.3},
+            {"grid_step_x", 3.3},
             {"grid_num_steps", 3.0},
 
-            {"takeoff_height", -2.5},
-            {"align_height", -2.0},
-            {"max_base_height", -1.5},
-            {"mean_base_height", -0.85},
+            {"takeoff_height", -3.5},
+            {"align_height", -2.7},
+            {"max_base_height", 0.0},
+            {"mean_base_height", 0.0},
 
             {"max_vertical_velocity", 1.2},
             {"max_horizontal_velocity", 1.0},
@@ -192,7 +194,11 @@ public:
         
         auto params = declareAndGetParameters(default_params);
 
-        fsm_ = std::make_unique<fase3FSM>(drone_node_, vision_node_, params);
+        // Handle target_shapes parameter separately (string array)
+        this->declare_parameter<std::vector<std::string>>("target_shapes", std::vector<std::string>{"circulo", "triangulo", "quadrado"});
+        std::vector<std::string> target_shapes = this->get_parameter("target_shapes").as_string_array();
+
+        fsm_ = std::make_unique<fase3FSM>(drone_node_, vision_node_, params, target_shapes);
 
         timer_ = this->create_wall_timer(
             std::chrono::milliseconds(50),

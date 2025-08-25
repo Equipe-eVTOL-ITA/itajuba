@@ -20,13 +20,16 @@ public:
 
         this->v_max = *blackboard.get<float>("landing_velocity_max");
         this->v_min = *blackboard.get<float>("landing_velocity_min");
-        float align_height = - *blackboard.get<float>("align_height"); // Negative
-        float max_base_height = - *blackboard.get<float>("max_base_height"); // Negative
+        float align_height = *blackboard.get<float>("align_height"); // Already negative in NED
+        float max_base_height = *blackboard.get<float>("max_base_height"); // Ground level = 0.0
 
-        this->time_constant = (this->v_max - this->v_min) / (align_height - max_base_height);
+        // Distance from align height to ground (positive distance down)
+        float descent_distance = max_base_height - align_height;  // 0.0 - (-2.0) = 2.0 meters
+        
+        this->time_constant = (this->v_max - this->v_min) / descent_distance;
 
         double TempoBase = (1/this->time_constant) * std::log(this->v_max/this->v_min);
-        double TempoTotal = TempoBase + max_base_height / this->v_min;
+        double TempoTotal = TempoBase + descent_distance / this->v_min;
         this->timeout_ = TempoTotal + 5.0;
         this->start_time_ = std::chrono::steady_clock::now();
 
@@ -58,9 +61,23 @@ public:
         this->vision->publishBaseDetection("confirmed_base", pos);
 
         auto bases = blackboard.get<std::vector<Base>>("bases");
-        bases->push_back({pos, true});
+        
+        // Get the target shape that was detected (default to "unknown")
+        std::string landed_shape = "unknown";
+        auto target_shape_ptr = blackboard.get<std::string>("target_shape");
+        if (target_shape_ptr != nullptr) {
+            landed_shape = *target_shape_ptr;
+        }
+        
+        // Create a new base with shape information and mark as visited
+        Base new_base;
+        new_base.coordinates = pos;
+        new_base.shape_class = landed_shape;
+        new_base.is_visited = true;
+        
+        bases->push_back(new_base);
 
-        drone->log("New base {" + std::to_string(bases->size()) + "}: " +
+        drone->log("Landed on shape: " + landed_shape + " at base {" + std::to_string(bases->size()) + "}: " +
                     std::to_string(pos.x()) + ", " + std::to_string(pos.y()) + ", " + std::to_string(pos.z()));
 
         auto num_bases = *blackboard.get<float>("num_bases");

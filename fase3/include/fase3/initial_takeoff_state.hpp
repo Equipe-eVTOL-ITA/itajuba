@@ -41,7 +41,11 @@ public:
         this->goal = Eigen::Vector3d({this->pos[0], this->pos[1], takeoff_height});
 
 
-        Base base{this->drone->getLocalPosition(), true};
+        Base base;
+        base.coordinates = this->drone->getLocalPosition();
+        base.shape_class = "circulo";  // Special designation for home base
+        base.is_visited = true;
+        
         this->vision->publishBaseDetection("confirmed_base", this->pos);
         
         std::vector<Base> bases;

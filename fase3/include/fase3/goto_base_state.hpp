@@ -21,6 +21,18 @@ public:
         this->align_height = *blackboard.get<float>("align_height");
 
         auto approx_base = *blackboard.get<Eigen::Vector3d>("approximate_base");
+        
+        // Get the target shape for logging
+        std::string target_shape = "unknown";
+        auto target_shape_ptr = blackboard.get<std::string>("target_shape");
+        if (target_shape_ptr != nullptr) {
+            target_shape = *target_shape_ptr;
+        }
+        
+        this->drone->log("Navigating to shape: " + target_shape + " at {" + 
+                        std::to_string(approx_base.x()) + ", " + 
+                        std::to_string(approx_base.y()) + "}");
+        
         this->initial_yaw = this->drone->getOrientation()[2];
 
         this->goal = Eigen::Vector3d(

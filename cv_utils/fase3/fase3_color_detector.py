@@ -13,7 +13,7 @@ class Fase3ColorDetector(Node):
         
         # Declare parameters
         self.declare_parameter('image_topic', '/vertical_camera')
-        self.declare_parameter('area_minima_bases', 300)
+        self.declare_parameter('area_minima_bases', 2000)
         
         # Declare HSV parameters for each shape
         self.shape_names = ['circulo', 'triangulo', 'hexagono', 'hexagono2', 'pentagono', 

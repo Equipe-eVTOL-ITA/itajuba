@@ -17,16 +17,17 @@ public:
         this->drone->log("STATE: RETURN HOME");
 
         this->max_velocity = *blackboard.get<float>("max_horizontal_velocity");
+        this->max_landing_velocity = *blackboard.get<float>("landing_velocity_max");
         this->position_tolerance = *blackboard.get<float>("position_tolerance");
         this->takeoff_height = *blackboard.get<float>("takeoff_height");
 
         auto home_pos = *blackboard.get<Eigen::Vector3d>("home_position");
-        this->initial_yaw = this->drone->getOrientation()[2];
+        this->initial_yaw = 0.0f;
 
         this->goal = Eigen::Vector3d(
             home_pos.x(),
             home_pos.y(),
-            this->takeoff_height
+            home_pos.z()
         );
         
         this->drone->log("Going to home at: " + std::to_string(this->goal.x()) + " " + std::to_string(this->goal.y()));
@@ -74,6 +75,7 @@ public:
                 little_goal.z(),
                 this->initial_yaw
             );
+
         }
         // Second phase: Descend to home position
         else {
@@ -83,8 +85,8 @@ public:
                 return "AT HOME";
             }
 
-            Eigen::Vector3d little_goal = pos + (diff.norm() > this->max_velocity ?
-                                                diff.normalized() * this->max_velocity : diff);
+            Eigen::Vector3d little_goal = pos + (diff.norm() > this->max_landing_velocity ?
+                                                diff.normalized() * this->max_landing_velocity : diff);
 
             this->drone->setLocalPosition(
                 little_goal.x(),
@@ -92,6 +94,9 @@ public:
                 little_goal.z(),
                 this->initial_yaw
             );
+
+            this->drone->log("Yaw set to: " + std::to_string(this->initial_yaw));
+
         }
 
         return "";
@@ -100,6 +105,7 @@ public:
 private:
     std::shared_ptr<Drone> drone;
     float max_velocity;
+    float max_landing_velocity;
     float position_tolerance;
     float takeoff_height;
     float initial_yaw;

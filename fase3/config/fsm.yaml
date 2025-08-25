@@ -7,16 +7,19 @@ fase3_fsm:
     num_bases: 3.0
     known_base_radius: 1.7
 
+    # Target shapes to land on (specify exactly 3)
+    target_shapes: ["cruz", "triangulo", "quadrado"]
+
     # Kept for the FSM logic; NOT used inside vision anymore
     height_to_ground: 1.1
 
     # Flight profile
-    grid_y_length: -3.3
-    grid_step_x: 3.3
+    grid_y_length: -2.5
+    grid_step_x: 2.5
     grid_num_steps: 3.0
 
-    takeoff_height: -3.5
-    align_height:  -2.7
+    takeoff_height: -2.5
+    align_height:  -2.0
     max_base_height: 0.0
     mean_base_height: 0.0
 
@@ -87,8 +90,8 @@ fase3_vision:
     bbox_real_size: 1.0
 
     # Plane z used by getApproximateBase (FRD z, positive down)
-    mean_base_height: -0.75
+    mean_base_height: 0.0
 
     # getAccurateBase: if true, project final point onto this plane z after PnP
-    accurate_project_to_ground: false
-    accurate_ground_z: -0.75
+    accurate_project_to_ground: true
+    accurate_ground_z: 0.0
