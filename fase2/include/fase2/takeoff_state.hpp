@@ -33,8 +33,6 @@ public:
         this->initial_yaw = this->drone->getOrientation()[2];
         this->goal = Eigen::Vector3d({this->pos[0], this->pos[1], takeoff_height});
 
-        this->take_off_taken = *bb.get<bool>("initial_takeoff_taken");
-
         this->log_(true);
     }
 

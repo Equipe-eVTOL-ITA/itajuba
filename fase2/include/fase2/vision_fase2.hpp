@@ -4,7 +4,6 @@
 #include <sensor_msgs/msg/image.hpp>
 #include <custom_msgs/msg/aruco_marker_msg.hpp>
 #include "fase2/comandos.hpp"
-using ArucoMarkerMsg = custom_msgs::msg::ArucoMarkerMsg;
 #include <cv_bridge/cv_bridge.h>
 #include <opencv2/core.hpp>
 #include <Eigen/Eigen>
@@ -12,6 +11,8 @@ using ArucoMarkerMsg = custom_msgs::msg::ArucoMarkerMsg;
 #include <string>
 #include <memory>
 #include <chrono>
+
+using ArucoMarkerMsg = custom_msgs::msg::ArucoMarkerMsg;
 
 struct ArucoMarker {
     Direcoes dir;
@@ -29,7 +30,6 @@ public:
 
         // Parâmetro de timeout
         this->declare_parameter<double>("timeout", 5.0);
-        timeout_ = std::chrono::duration<double>(this->get_parameter("timeout").as_double());
 
         // Subscriber para dados de lane detection
         aruco_sub_ = this->create_subscription<ArucoMarkerMsg>(
@@ -42,11 +42,6 @@ public:
     }
 
     ArucoMarker getCurrentMarker() {
-        auto now = std::chrono::steady_clock::now();
-        if (now - last_detection_time_ > timeout_) {
-            // Se o timeout foi excedido, retornar um marcador inválido
-            return ArucoMarker{Direcoes::NENHUMA, 0.0f, 0.0f};
-        }
         return current_marker_;
     }
 
@@ -61,6 +56,7 @@ private:
 
     void aruco_detection_callback(const ArucoMarkerMsg::SharedPtr msg) {
         float min_distance_xy = std::numeric_limits<float>::max();
+        int closest_id_index = -1;
         int closest_id = -1;
         for (size_t i = 0; i < msg->ids.size(); ++i) {
             int id = msg->ids[i];
@@ -69,14 +65,18 @@ private:
             if (distance < min_distance_xy) {
                 min_distance_xy = distance;
                 closest_id = id;
+                closest_id_index = i;
             }
         }
+
         if (closest_id != -1) {
-            RCLCPP_INFO(this->get_logger(), "Marcador ArUco detectado: ID=%d", closest_id);
-            
             this->current_marker_.dir = static_cast<Direcoes>(closest_id);
-            this->current_marker_.x = msg->poses[closest_id].position.x * 100.0f; // Convertendo para cm
-            this->current_marker_.y = msg->poses[closest_id].position.y * 100.0f;
+            this->current_marker_.x = msg->poses[closest_id_index].position.x * 100.0f; // Convertendo para cm
+            this->current_marker_.y = msg->poses[closest_id_index].position.y * 100.0f;
+        } else {
+            this->current_marker_.dir = Direcoes::NENHUMA;
+            this->current_marker_.x = 0.0f;
+            this->current_marker_.y = 0.0f;
         }
     }
 };

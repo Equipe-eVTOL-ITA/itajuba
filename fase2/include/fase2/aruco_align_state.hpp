@@ -3,6 +3,7 @@
 #include "drone/Drone.hpp"
 #include "vision_fase2.hpp"
 #include "fase2/comandos.hpp"
+#include "fase2/movement.hpp"
 #include "PidController.hpp"
 
 class ArucoAlignState : public fsm::State {
@@ -62,6 +63,7 @@ public:
         );
 
         this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f); // parar movimento anterior
+        this->start_time_ = std::chrono::steady_clock::now();
     }
 
 
@@ -79,12 +81,20 @@ public:
         this->marker = this->vision->getCurrentMarker();
 
         if(this->marker.dir == Direcoes::NENHUMA){
+            this->drone->log("NO MARKER detected, cannot align.");
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f); // parar movimento anterior
             return "NO MARKER";
         }
 
-        float drone_x_coord = -this->marker.y;
-        float drone_y_coord = this->marker.x;
+        // Normalizar coordenadas do marcador
+        float x_marker_normalized = this->marker.x / 100.0f;
+        float y_marker_normalized = this->marker.y / 100.0f;
+
+        // Logar valores normalizados recebidos
+        this->drone->log("x_marker_normalized: " + std::to_string(x_marker_normalized) + ", y_marker_normalized: " + std::to_string(y_marker_normalized));
+
+        float drone_x_coord = -y_marker_normalized;
+        float drone_y_coord = x_marker_normalized;
 
         float error_drone_x = drone_x_coord - SETPOINT_X;
         float error_drone_y = drone_y_coord - SETPOINT_Y;
@@ -92,7 +102,7 @@ public:
         if(abs(error_drone_x) < this->normalized_position_tolerance && 
            abs(error_drone_y) < this->normalized_position_tolerance){
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f); // parar movimento anterior
-            this->drone->log("Aruco Aligned!");
+            this->drone->log("Aruco Aligned! (distance: " + std::to_string(std::sqrt(error_drone_x * error_drone_x + error_drone_y * error_drone_y)) + ")");
             return "ALIGNED";
         }
 
@@ -102,9 +112,9 @@ public:
         vel_x = std::clamp(vel_x, -this->max_velocity, this->max_velocity);
         vel_y = std::clamp(vel_y, -this->max_velocity, this->max_velocity);
 
-        Eigen::Vector3d local_velocity(vel_x, vel_y, 0.0f);
-        local_velocity = adjust_velocity_using_yaw(local_velocity, this->drone->getOrientation()[2]);
-        this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
+        move_local(this->drone, vel_x, vel_y, 0.0f);
+
+        this->drone->log("drone_x_coord: " + std::to_string(drone_x_coord) + ", drone_y_coord: " + std::to_string(drone_y_coord));
 
         return "";
     }
