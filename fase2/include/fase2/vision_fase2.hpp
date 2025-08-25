@@ -56,7 +56,7 @@ private:
 
     void aruco_detection_callback(const ArucoMarkerMsg::SharedPtr msg) {
         float min_distance_xy = std::numeric_limits<float>::max();
-        int closest_idx = -1;
+        int closest_id_index = -1;
         int closest_id = -1;
         for (size_t i = 0; i < msg->ids.size(); ++i) {
             int id = msg->ids[i];
@@ -65,14 +65,14 @@ private:
             if (distance < min_distance_xy) {
                 min_distance_xy = distance;
                 closest_id = id;
-                closest_idx = i;
+                closest_id_index = i;
             }
         }
-        // Só aceita ids válidos do enum Direcoes (0 a 5)
-        if (closest_id >= static_cast<int>(Direcoes::FRENTE) && closest_id <= static_cast<int>(Direcoes::NENHUMA) && closest_idx != -1) {
+
+        if (closest_id != -1) {
             this->current_marker_.dir = static_cast<Direcoes>(closest_id);
-            this->current_marker_.x = msg->poses[closest_idx].position.x * 100.0f; // Convertendo para cm
-            this->current_marker_.y = msg->poses[closest_idx].position.y * 100.0f;
+            this->current_marker_.x = msg->poses[closest_id_index].position.x * 100.0f; // Convertendo para cm
+            this->current_marker_.y = msg->poses[closest_id_index].position.y * 100.0f;
         } else {
             this->current_marker_.dir = Direcoes::NENHUMA;
             this->current_marker_.x = 0.0f;

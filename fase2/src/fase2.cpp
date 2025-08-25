@@ -94,7 +94,7 @@ public:
         });
 
         this->add_transitions("ARUCO TRAVERSE", {
-            {"DIFFERENT MARKER", "ALIGN ARUCO"},
+            {"DIFFERENT MARKER", "ARUCO ALIGN"},
             {"POUSAR", "LANDING"},
             {"SEG FAULT", "ERROR"}
         });

@@ -3,6 +3,7 @@
 #include "drone/Drone.hpp"
 #include "vision_fase2.hpp"
 #include "fase2/comandos.hpp"
+#include "fase2/movement.hpp"
 #include "PidController.hpp"
 
 class ArucoAlignState : public fsm::State {
@@ -80,6 +81,7 @@ public:
         this->marker = this->vision->getCurrentMarker();
 
         if(this->marker.dir == Direcoes::NENHUMA){
+            this->drone->log("NO MARKER detected, cannot align.");
             this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f); // parar movimento anterior
             return "NO MARKER";
         }
@@ -110,9 +112,7 @@ public:
         vel_x = std::clamp(vel_x, -this->max_velocity, this->max_velocity);
         vel_y = std::clamp(vel_y, -this->max_velocity, this->max_velocity);
 
-        Eigen::Vector3d local_velocity(vel_x, vel_y, 0.0f);
-        local_velocity = adjust_velocity_using_yaw(local_velocity, this->drone->getOrientation()[2]);
-        this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
+        move_local(this->drone, vel_x, vel_y, 0.0f);
 
         this->drone->log("drone_x_coord: " + std::to_string(drone_x_coord) + ", drone_y_coord: " + std::to_string(drone_y_coord));
 

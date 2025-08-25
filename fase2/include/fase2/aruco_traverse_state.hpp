@@ -14,13 +14,11 @@ private:
     ArucoMarker marker;
     ArucoMarker first_marker;
 
-    Direcoes last_direction = Direcoes::NENHUMA;
-
     float max_velocity;
     float height;
 
 public:
-    static_assert(std::is_enum<Direcoes>::value, "Direcoes must be an enum");
+    
     ArucoTraverseState() : fsm::State() {}
 
     void on_enter(fsm::Blackboard &bb) override
@@ -48,27 +46,22 @@ public:
 
         auto marker = this->vision->getCurrentMarker();
 
-        if(marker.dir == Direcoes::NENHUMA) {
-            this->drone->log("No marker detected, just believing... last_direction=" + std::to_string(static_cast<int>(this->last_direction)));
-            Direcoes dir_key = static_cast<Direcoes>(this->last_direction);
-            this->drone->log("[DEBUG] Attempting get_direction_vector(last_direction) with value: " + std::to_string(static_cast<int>(dir_key)));
-            move_local(this->drone, get_direction_vector(dir_key), this->max_velocity);
-            return "";
-        }
-
-        if (marker.dir == Direcoes::POUSAR)
+        if (marker.dir == Direcoes::POUSAR){
+            this->drone->log("Passando para o estado de LANDING...");
             return "POUSAR";
+        }
 
         this->drone->log("Moving towards marker " + std::to_string(static_cast<int>(marker.dir)));
-        Direcoes current_dir = static_cast<Direcoes>(marker.dir);
-        if(this->last_direction != marker.dir) {
-            this->drone->log("[DEBUG] Updating last_direction from " + std::to_string(static_cast<int>(this->last_direction)) + " to " + std::to_string(static_cast<int>(marker.dir)));
-            this->last_direction = marker.dir;
-        }
-        this->drone->log("[DEBUG] Attempting get_direction_vector(current_dir) with value: " + std::to_string(static_cast<int>(current_dir)));
-        move_local(this->drone, get_direction_vector(current_dir), this->max_velocity);
-        if (marker.dir != this->first_marker.dir)
+
+        if (marker.dir != this->first_marker.dir && marker.dir != Direcoes::NENHUMA){
+            this->drone->log("Different marker detected");
             return "DIFFERENT MARKER";
+        }
+
+        this->drone->log("a");
+        move_local(this->drone, get_sentido(this->first_marker.dir), this->max_velocity);
+        this->drone->log("b");
+
         return "";
     }
 };

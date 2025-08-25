@@ -4,6 +4,7 @@
 #include "vision_fase2.hpp"
 #include "fase2/comandos.hpp"
 #include "transformations.hpp"
+#include "movement.hpp"
 
 class ArucoSearchState : public fsm::State {
 private:
@@ -42,10 +43,16 @@ public:
         this->marker = this->vision->getCurrentMarker();
         if(this->marker.dir == Direcoes::NENHUMA){
             this->drone->log("No marker detected, moving forward");
-            Eigen::Vector3d local_velocity = adjust_velocity_using_yaw(get_direction_vector(Direcoes::FRENTE), this->drone->getOrientation()[2]);
-            this->drone->setLocalVelocity(local_velocity.x(), local_velocity.y(), local_velocity.z(), 0.0f);
+
+            move_local(this->drone, get_sentido(Direcoes::FRENTE), this->max_velocity);
+
             return "";
         }
+
+        this->drone->setLocalVelocity(0.0f, 0.0f, 0.0f, 0.0f); // parar movimento anterior
+        
+        this->drone->log("Marker detected: " + std::to_string(static_cast<int>(this->marker.dir)));
+        
         return "MARKER DETECTED";
     }
 };

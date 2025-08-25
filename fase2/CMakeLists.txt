@@ -28,7 +28,6 @@ include_directories(${CMAKE_SOURCE_DIR}/../fsm/fsm/include)
 
 add_executable(fase2
   src/fase2.cpp
-  src/comandos.cpp
 )
 
 ament_target_dependencies(fase2
