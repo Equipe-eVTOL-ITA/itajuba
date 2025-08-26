@@ -58,7 +58,6 @@ class BaseDetector(Node):
         self.classification_topic = "/vertical_camera/classification"
         self.classification_publisher = self.create_publisher(Detection2DArray, self.classification_topic, 10)
 
-
     def image_callback(self, msg):
         detection_array = Detection2DArray()
         detection_array.header = msg.header
@@ -119,6 +118,9 @@ class BaseDetector(Node):
         
         # Publicar detections
         self.classification_publisher.publish(detection_array)
+
+        cv2.imshow("Base Detection", annotated)
+        cv2.waitKey(1)
 
 
 def main(args=None):
