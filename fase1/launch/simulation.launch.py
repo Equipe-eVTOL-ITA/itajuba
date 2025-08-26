@@ -14,7 +14,7 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    pkg_fase1       = get_package_share_directory('itajuba_fase1')
+    pkg_fase1       = get_package_share_directory('itajuba_fase3')
     simulation_params  = os.path.join(pkg_fase1, "config", "simulation.yaml")
     fsm_params     = os.path.join(pkg_fase1, "config", "fsm.yaml")
     rviz_cfg = os.path.join(pkg_fase1, 'launch', 'simulation.rviz')
@@ -58,7 +58,7 @@ def generate_launch_description():
 
     # Core telemetry nodes
     system_health_node = Node(
-        package='itajuba_drone_lib',
+        package='cbr_drone_lib',
         executable='system_health',
         parameters=[simulation_params],
         output='screen'
@@ -73,7 +73,7 @@ def generate_launch_description():
     )
 
     fsm_node = Node(
-        package='itajuba_fase1',
+        package='itajuba_fase3',
         executable=LaunchConfiguration("mission"),
         parameters=[fsm_params],
         output='screen'

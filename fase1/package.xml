@@ -3,7 +3,7 @@
 <package format="3">
   <name>itajuba_fase1</name>
   <version>0.0.0</version>
-  <description>Solution for Position and Transverse TDP Challenge from FRL 2025</description>
+  <description>Solution for Itajuba 2025</description>
   <maintainer email="viniceconp@gmail.com">Vinicius Ceccon</maintainer>
   <license>TODO: License declaration</license>
 
@@ -11,6 +11,7 @@
 
   <depend>itajuba_drone_lib</depend>
   <depend>fsm</depend>
+  <depend>custom_msgs</depend>
   <depend>Eigen3</depend>
   <depend>rclcpp</depend>
   <depend>opencv2</depend>
@@ -20,7 +21,6 @@
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
   <depend>visualization_msgs</depend>
-
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
