@@ -5,9 +5,9 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy
 from std_msgs.msg import Int32
 from sensor_msgs.msg import Image
+from custom_msgs.msg import GlobalPositionMsg
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
-import numpy as np
 import os
 from datetime import datetime
 
@@ -46,12 +46,23 @@ class PicBasesNode(Node):
             qos_profile
         )
 
+        self.gps_sub = self.create_subscription(
+            GlobalPositionMsg,
+            '/current_gps_position',
+            self.gps_callback,
+            QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+        )
 
+        self.current_gps = GPS_Pos()
+
+
+    def gps_callback(self, msg):
+        self.current_gps = GPS_Pos(lat=msg.lat, lon=msg.lon, alt=msg.alt, updated=True)
 
     def counter_callback(self, msg):
         current_count: int = msg.data
 
-        if current_count > self.count:
+        if current_count > self.count and self.current_gps.updated:
             self.count = current_count
             self.get_logger().info(f'New base detected! Count: {current_count}')
             self.save_current_image()
@@ -70,7 +81,7 @@ class PicBasesNode(Node):
             return
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        info_text = f"Base #{self.count} - {timestamp}"
+        info_text = f"Base #{self.count} - {timestamp} - GPS: {self.current_gps.lat:.6f}, {self.current_gps.lon:.6f}, Alt: {self.current_gps.alt:.2f}m"
         cv2.putText(self.image, info_text, (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
         
@@ -83,6 +94,13 @@ class PicBasesNode(Node):
             self.get_logger().info(f'Saved base image: {filepath}')
         except Exception as e:
             self.get_logger().error(f'Failed to save image: {str(e)}')
+
+class GPS_Pos:
+    def __init__(self, lat=0.0, lon=0.0, alt=0.0, updated=False):
+        self.lat = lat
+        self.lon = lon
+        self.alt = alt
+        self.updated = updated
 
 def main(args=None):
     rclpy.init(args=args)

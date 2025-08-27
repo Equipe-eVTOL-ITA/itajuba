@@ -25,7 +25,7 @@ fase4_fsm:
     # PID parameters for positioning (valores mais conservadores)
     pid_pos_kp: 1.0
     pid_pos_ki: 0.0
-    pid_pos_kd: 0.0
+    pid_pos_kd: 0.07
     setpoint: 0.0
 
 fase4_vision:

@@ -17,6 +17,18 @@ using Detection2D = vision_msgs::msg::Detection2D;
 using BaseDetection = custom_msgs::msg::BaseDetection;
 
 class VisionNode : public rclcpp::Node {
+private:
+// ROS2 subscription
+    rclcpp::Subscription<Detection2DArray>::SharedPtr detection_sub_;
+    rclcpp::Publisher<BaseDetection>::SharedPtr base_detection_pub_;
+    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr counter_pub_; // publicar o numero de imagens contabilizadas faz com que seja facil do python diferenciar novas bases e salvar as imagens
+
+    Base current_base_;
+    std::vector<Base> all_bases_;
+
+    std::chrono::steady_clock::time_point last_detection_time_;
+    std::chrono::duration<double> timeout_{5.0};
+
 public:
     VisionNode() : Node("fase1_vision") {
         // QoS optimizado para visão computacional
@@ -71,17 +83,6 @@ public:
     }
 
 private:
-    // ROS2 subscription
-    rclcpp::Subscription<Detection2DArray>::SharedPtr detection_sub_;
-    rclcpp::Publisher<BaseDetection>::SharedPtr base_detection_pub_;
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr counter_pub_; // publicar o numero de imagens contabilizadas faz com que seja facil do python diferenciar novas bases e salvar as imagens
-
-    Base current_base_;
-    std::vector<Base> all_bases_;
-
-    std::chrono::steady_clock::time_point last_detection_time_;
-    std::chrono::duration<double> timeout_{5.0};
-
     void detection_callback(const Detection2DArray::SharedPtr msg) {
         all_bases_.clear(); // limpar o vector de bases para nova detecção
 

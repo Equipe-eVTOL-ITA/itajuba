@@ -26,8 +26,17 @@ class ArucoDetector(Node):
         # definindo o dicionario de marcadores
         self.dicionario = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         self.tamanho_real = 0.7 # lado do quadrado preto em metros
-        self.aruco_params = cv2.aruco.DetectorParameters()
-        self.detector = cv2.aruco.ArucoDetector(self.dicionario, self.aruco_params)
+        
+        # Compatibilidade com diferentes versões do OpenCV
+        try:
+            # OpenCV 4.7+ com ArucoDetector
+            self.aruco_params = cv2.aruco.DetectorParameters()
+            self.detector = cv2.aruco.ArucoDetector(self.dicionario, self.aruco_params)
+            self.use_new_api = True
+        except AttributeError:
+            # OpenCV 4.6 e anteriores
+            self.aruco_params = cv2.aruco.DetectorParameters_create()
+            self.use_new_api = False
 
         # self.calibrate_camera_real()  # Para uso com câmera real
         self.calibrate_camera_sim()     # Para uso em simulação
@@ -59,7 +68,11 @@ class ArucoDetector(Node):
         np_arr = np.frombuffer(msg.data, np.uint8)
         cv_image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
 
-        corners, ids, rejected = self.detector.detectMarkers(cv_image)
+        # Detecção compatível com diferentes versões do OpenCV
+        if self.use_new_api:
+            corners, ids, rejected = self.detector.detectMarkers(cv_image)
+        else:
+            corners, ids, rejected = cv2.aruco.detectMarkers(cv_image, self.dicionario, parameters=self.aruco_params)
 
         detection_msg = ArucoMarkerMsg()
         if ids is not None:
