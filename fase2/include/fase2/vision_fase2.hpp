@@ -61,7 +61,7 @@ private:
         for (size_t i = 0; i < msg->ids.size(); ++i) {
             int id = msg->ids[i];
             const auto& pose = msg->poses[i];
-            float distance = std::sqrt(std::pow(pose.position.x, 2) + std::pow(pose.position.y, 2));
+            float distance = std::sqrt(std::pow(pose.position.x-0.5f, 2) + std::pow(pose.position.y-0.5f, 2));
             if (distance < min_distance_xy) {
                 min_distance_xy = distance;
                 closest_id = id;

@@ -8,7 +8,7 @@ namespace Sentido {
     const Eigen::Vector3d TRAS = Eigen::Vector3d({-1.0, 0.0, 0.0});
     const Eigen::Vector3d ESQUERDA = Eigen::Vector3d({0.0, -1.0, 0.0});
     const Eigen::Vector3d DIREITA = Eigen::Vector3d({0.0, 1.0, 0.0});
-    const Eigen::Vector3d POUSAR = Eigen::Vector3d({0.0, 0.0, 0.0});
+    const Eigen::Vector3d POUSAR = Eigen::Vector3d({0.0, 0.0, 1.0});
     const Eigen::Vector3d NENHUMA = Eigen::Vector3d({0.0, 0.0, 0.0});
 }
 
