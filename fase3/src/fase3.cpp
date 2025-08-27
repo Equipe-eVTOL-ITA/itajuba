@@ -176,8 +176,8 @@ public:
 
             {"max_vertical_velocity", 1.2},
             {"max_horizontal_velocity", 1.0},
-            {"landing_velocity_max", 0.5},
-            {"landing_velocity_min", 0.2},
+            {"landing_velocity_max", 0.7},
+            {"landing_velocity_min", 0.4},
             {"align_descent_velocity", 0.15},
 
             {"max_search_time", 30.0},

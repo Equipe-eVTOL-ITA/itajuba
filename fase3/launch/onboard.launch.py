@@ -19,13 +19,13 @@ def generate_launch_description():
 
     exec_arg = DeclareLaunchArgument(
         "mission",
-        default_value="fase1",
+        default_value="fase3",
         description="Executable that implements the mission FSM")
     
 
     # Core telemetry nodes
     system_health_node = Node(
-        package='cbr_drone_lib',
+        package='itajuba_drone_lib',
         executable='system_health',
         parameters=[onboard_params],
         output='screen'
@@ -33,7 +33,7 @@ def generate_launch_description():
 
     # Telemetry Recorder - saves telemetry data
     telemetry_recorder_node = Node(
-        package='telemetry_handler',
+        package='itajuba_telemetry_handler',
         executable='telemetry_recorder',
         parameters=[onboard_params],
         output='screen'
@@ -47,10 +47,10 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Base detector node
+    # Base detector node - use itajuba's color detector
     base_detector_node = Node(
-        package='cbr_cv_utils',
-        executable='base_detector',
+        package='itajuba_cv_utils',
+        executable='fase3_color_detector',
         parameters=[onboard_params],
         output='screen'
     )

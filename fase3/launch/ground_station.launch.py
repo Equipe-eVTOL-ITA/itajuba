@@ -18,7 +18,7 @@ def generate_launch_description():
 
     # Telemetry Handler - core telemetry processing
     telemetry_handler_node = Node(
-        package='telemetry_handler',
+        package='itajuba_telemetry_handler',
         executable='telemetry_handler',
         parameters=[ground_station_params],
         output='screen'
@@ -26,7 +26,7 @@ def generate_launch_description():
 
     # Telemetry Dashboard - unified GUI for comprehensive monitoring
     telemetry_dashboard_node = Node(
-        package='telemetry_handler',
+        package='itajuba_telemetry_handler',
         executable='telemetry_dashboard',
         parameters=[ground_station_params],
         output='screen'
@@ -34,7 +34,7 @@ def generate_launch_description():
 
     # Telemetry Recorder - saves telemetry data
     telemetry_recorder_node = Node(
-        package='telemetry_handler',
+        package='itajuba_telemetry_handler',
         executable='telemetry_recorder',
         parameters=[ground_station_params],
         output='screen'

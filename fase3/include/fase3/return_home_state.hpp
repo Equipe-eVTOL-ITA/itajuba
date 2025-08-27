@@ -22,7 +22,9 @@ public:
         this->takeoff_height = *blackboard.get<float>("takeoff_height");
 
         auto home_pos = *blackboard.get<Eigen::Vector3d>("home_position");
-        this->initial_yaw = 0.0f;
+        this->initial_yaw = this->drone->getOrientation().z();
+
+        this->printed=0;
 
         this->goal = Eigen::Vector3d(
             home_pos.x(),
@@ -46,6 +48,8 @@ public:
 
     std::string act(fsm::Blackboard &blackboard) override {
         (void)blackboard;
+
+        this->printed++;
 
         Eigen::Vector3d pos = this->drone->getLocalPosition();
 
@@ -95,8 +99,7 @@ public:
                 this->initial_yaw
             );
 
-            this->drone->log("Yaw set to: " + std::to_string(this->initial_yaw));
-
+        // this->drone->log("Yaw set to: " + std::to_string(this->initial_yaw));
         }
 
         return "";
@@ -112,4 +115,5 @@ private:
     Eigen::Vector3d goal;
     bool over_base = false;
     std::chrono::steady_clock::time_point start_time;
+    int printed;
 };

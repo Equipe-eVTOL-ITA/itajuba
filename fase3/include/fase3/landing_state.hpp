@@ -30,7 +30,7 @@ public:
 
         double TempoBase = (1/this->time_constant) * std::log(this->v_max/this->v_min);
         double TempoTotal = TempoBase + descent_distance / this->v_min;
-        this->timeout_ = TempoTotal + 5.0;
+        this->timeout_ = TempoTotal + 1.0;
         this->start_time_ = std::chrono::steady_clock::now();
 
 

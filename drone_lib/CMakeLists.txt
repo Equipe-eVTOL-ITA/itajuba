@@ -57,6 +57,17 @@ ament_target_dependencies(system_health
   custom_msgs
 )
 
+add_executable(pos_to_rviz
+  src/pos_to_rviz.cpp
+)
+
+ament_target_dependencies(pos_to_rviz
+  rclcpp
+  geometry_msgs
+  nav_msgs
+  custom_msgs
+)
+
 ament_export_targets(itajuba_drone_lib HAS_LIBRARY_TARGET)
 
 ament_export_dependencies(Eigen3 px4_msgs rclcpp tf2 cv_bridge custom_msgs)
@@ -77,7 +88,7 @@ install(
   INCLUDES DESTINATION include
 )
 
-install(TARGETS system_health
+install(TARGETS system_health pos_to_rviz
   RUNTIME DESTINATION lib/${PROJECT_NAME})
 
 ament_package()

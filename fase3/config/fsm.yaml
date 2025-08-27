@@ -1,8 +1,8 @@
 fase3_fsm:
   ros__parameters:
-    fictual_home_x: 1.0
-    fictual_home_y: -1.0
-    fictual_home_z: -0.6      # FRD: z positive is DOWN
+    fictual_home_x: 0.0
+    fictual_home_y: 0.0
+    fictual_home_z: 0.0      # FRD: z positive is DOWN
 
     num_bases: 3.0
     known_base_radius: 1.7
@@ -14,19 +14,19 @@ fase3_fsm:
     height_to_ground: 1.1
 
     # Flight profile
-    grid_y_length: -2.5
-    grid_step_x: 2.5
+    grid_y_length: -3.3
+    grid_step_x: 3.3
     grid_num_steps: 3.0
 
-    takeoff_height: -2.5
-    align_height:  -2.0
+    takeoff_height: -5.0
+    align_height:  -4.0
     max_base_height: 0.0
     mean_base_height: 0.0
 
     max_vertical_velocity: 1.2
     max_horizontal_velocity: 1.0
-    landing_velocity_max: 0.5
-    landing_velocity_min: 0.2
+    landing_velocity_max: 0.7
+    landing_velocity_min: 0.4
     align_descent_velocity: 0.15
 
     max_search_time: 30.0

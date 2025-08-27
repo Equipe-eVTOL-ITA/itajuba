@@ -10,7 +10,7 @@ def generate_launch_description():
     pkg_fase3   = get_package_share_directory('itajuba_fase3')
     pkg_cv_utils = get_package_share_directory('itajuba_cv_utils')
     params      = os.path.join(pkg_fase3, "config", "fsm.yaml")
-    detector_params = os.path.join(pkg_cv_utils, 'fase3', 'hsv_fase3.yaml')
+    detector_params = os.path.join(pkg_fase3, 'config', 'onboard.yaml')
     rviz_cfg = os.path.join(pkg_fase3, 'launch', 'drone_viz.rviz')
 
     exec_arg = DeclareLaunchArgument(
@@ -34,7 +34,7 @@ def generate_launch_description():
     )
 
     bridge_node = Node(
-        package='sae_drone_lib',
+        package='itajuba_drone_lib',
         executable='pos_to_rviz',
         output='screen'
     )
