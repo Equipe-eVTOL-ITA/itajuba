@@ -5,16 +5,11 @@
 #include "drone/Drone.hpp"
 #include "fase1/vision_fase1.hpp"
 #include "fase1/bases.hpp"
+#include "fase1/GPS_Handler.hpp"
 #include <chrono>
 #include "px4_msgs/msg/vehicle_global_position.hpp"
 #include <custom_msgs/msg/global_position_msg.hpp>
 
-typedef struct{
-    float lat;
-    float lon;
-    float alt;
-    bool updated;
-} GPSpos;
 
 class CountNPicState : public fsm::State {
 private:
@@ -49,40 +44,18 @@ public:
 
         this->max_bases = *bb.get<int>("max_number_of_bases");
 
-        // QoS para garantir que recebo os dados do GPS
-        rclcpp::QoS gps_qos(10);
-        gps_qos.reliable();
-        gps_qos.durability(rclcpp::DurabilityPolicy::TransientLocal);
+        this->current_gps = EMPTY_GPS;
 
-        // Como CountNPicState não é um nó ROS2, vamos usar o drone para criar subscribers/publishers
-        gps_sub_ = this->drone->create_subscription<px4_msgs::msg::VehicleGlobalPosition>(
-            "/fmu/out/vehicle_global_position",
-            gps_qos,
-            [this](const px4_msgs::msg::VehicleGlobalPosition::SharedPtr msg) {
-                this->gps_callback(msg);
-            }
-        );
-
-        this->current_gps = {0.0, 0.0, 0.0, false};
+        rclcpp::QoS gps_qos_pub(10);
+        gps_qos_pub.best_effort();
+        gps_qos_pub.durability(rclcpp::DurabilityPolicy::Volatile);
 
         // settando o publisher para as mensagens de gps
         this->global_pos_pub_ = this->drone->create_publisher<custom_msgs::msg::GlobalPositionMsg>(
             "/current_gps_position",
-            gps_qos // utilizando o mesmo QoS que o subscriber
+            gps_qos_pub
         );
 
-    }
-
-    void gps_callback(const px4_msgs::msg::VehicleGlobalPosition::SharedPtr msg) {
-        // Processar dados de GPS aqui
-        //if (msg->lat_lon_valid && msg->alt_valid) {
-            // Latitude e longitude em graus, altitude em metros            
-            this->current_gps.lat = static_cast<float>(msg->lat); // double
-            this->current_gps.lon = static_cast<float>(msg->lon); // double
-            this->current_gps.alt = msg->alt; // float
-
-            this->current_gps.updated = true;
-        //}
     }
 
     std::string act(fsm::Blackboard &bb) override {
@@ -90,23 +63,38 @@ public:
 
         auto base = this->vision->getCurrentBase();
 
-        // so roda se ha forma e se pegou o sinal de gps
+        // Corrigir: desreferenciar o shared_ptr corretamente
+        auto current_gps_ptr = bb.get<std::shared_ptr<GPSpos>>("current_gps");
+        if (!current_gps_ptr) return "";
+        this->current_gps = **current_gps_ptr; // Dupla desreferência: *(*current_gps_ptr)
+
+        // Recuperar último GPS do blackboard - corrigir tipos
+        auto last_gps_ptr = bb.get<std::shared_ptr<GPSpos>>("last_gps");
+        GPSpos last_gps = (last_gps_ptr && *last_gps_ptr) ? **last_gps_ptr : EMPTY_GPS;
+
+        // Só conta se há forma, GPS válido E está longe da última detecção
         if(base.forma != NENHUMA_FORMA && this->current_gps.updated) {
-            this->counter_bases++;
+            // Verificar distância antes de contar
+            if(am_i_far(this->current_gps, last_gps, 2.0f)) { // usar threshold fixo ou recuperar do blackboard
+                this->counter_bases++;
 
-            std::string forma_nome = forma_map[base.forma];
-            this->drone->log("Base detectada: " + forma_nome + " (Total: " + std::to_string(this->counter_bases) + ")");
+                std::string forma_nome = forma_map[base.forma];
+                this->drone->log("Base detectada: " + forma_nome + " (" + std::to_string(this->counter_bases) + "/" + std::to_string(this->max_bases) + ")");
 
-            this->vision->publishCounter(this->counter_bases);
+                this->vision->publishCounter(this->counter_bases);
 
-            // Publicando os dados de gps para a rede ros2
-            custom_msgs::msg::GlobalPositionMsg gps_msg;
-            gps_msg.lat = this->current_gps.lat;
-            gps_msg.lon = this->current_gps.lon;
-            gps_msg.alt = this->current_gps.alt;
-            this->global_pos_pub_->publish(gps_msg);
+                // Publicando os dados de gps para a rede ros2
+                custom_msgs::msg::GlobalPositionMsg gps_msg;
+                gps_msg.lat = this->current_gps.lat;
+                gps_msg.lon = this->current_gps.lon;
+                gps_msg.alt = this->current_gps.alt;
+                this->global_pos_pub_->publish(gps_msg);
 
-            return (this->counter_bases >= this->max_bases) ? "ALL BASES FOUND" : "NEXT WAYPOINT";
+                return (this->counter_bases >= this->max_bases) ? "ALL BASES FOUND" : "NEXT WAYPOINT";
+            } else {
+                this->drone->log("Base muito próxima da anterior - não contando");
+                return "NEXT WAYPOINT"; // Ignorar esta base e continuar
+            }
         }
 
         return "";

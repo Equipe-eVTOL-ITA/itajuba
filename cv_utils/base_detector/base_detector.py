@@ -12,7 +12,7 @@ class BaseDetector(Node):
         super().__init__('base_detector')
         
         self.declare_parameter('image_topic', '/vertical_camera')
-        self.declare_parameter('area_minima_bases', 300)
+        self.declare_parameter('area_minima_bases', 100)
         
         self.shape_names = [
             'circulo', 'triangulo', 'hexagono', 'pentagono', 

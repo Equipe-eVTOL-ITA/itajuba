@@ -34,7 +34,10 @@ setup(
             #'yolo_classifier = yolo_classifier.yolo_classifier:main',
             #'barcode = barcode_detector.oak_bar:main',
             'aruco = aruco_detector.aruco_detector:main', # ros2 run itajuba_cv_utils aruco
-            'fase3_color_detector = fase3.fase3_color_detector:main'  # Added color detector
+            'fase3_color_detector = fase3.fase3_color_detector:main',  # Added color detector
+            'base_detector = base_detector.base_detector:main',
+            'lane_detector = lane_detector.lane_detector:main',
+            'pic_bases = pic_bases.pic_bases:main'
                     #  pasta       arquvivo.py  funcao no arquivo
         ],
     }

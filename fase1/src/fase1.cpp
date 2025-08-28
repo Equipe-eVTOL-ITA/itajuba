@@ -4,9 +4,11 @@
 
 #include "fsm/fsm.hpp"
 #include <rclcpp/rclcpp.hpp>
+#include <Eigen/Eigen>
 #include "drone/Drone.hpp"
 #include "fase1/vision_fase1.hpp"
 #include "fase1/ArenaPoint.hpp"
+#include "fase1/GPS_Handler.hpp"
 
 #include "fase1/states/arming_state.hpp"
 #include "fase1/states/takeoff_state.hpp"
@@ -28,22 +30,25 @@ std::map<Forma, std::string> forma_map = {
     {NENHUMA_FORMA, "nenhuma forma"}
 };
 
-template<typename DoubleHandler, typename StringHandler, typename BooleanHandler>
-std::map<std::string, std::variant<double, std::string, bool>> actOnBlackboardMap(
-    const std::map<std::string, std::variant<double, std::string, bool>>& defaults,
-    DoubleHandler&& double_handler,
+template<typename IntegerHandler, typename StringHandler, typename BooleanHandler, typename DoubleHandler>
+std::map<std::string, std::variant<int, std::string, bool, double>> actOnBlackboardMap(
+    const std::map<std::string, std::variant<int, std::string, bool, double>>& defaults,
+    IntegerHandler&& integer_handler,
     StringHandler&& string_handler,
-    BooleanHandler&& boolean_handler) {
+    BooleanHandler&& boolean_handler,
+    DoubleHandler&& double_handler) {
 
-    std::map<std::string, std::variant<double, std::string, bool>> result;
+    std::map<std::string, std::variant<int, std::string, bool, double>> result;
 
     for (const auto& [name, default_value] : defaults) {
-        if (std::holds_alternative<double>(default_value)) {
-            result[name] = double_handler(name, std::get<double>(default_value));
+        if(std::holds_alternative<int>(default_value)){
+            result[name] = integer_handler(name, std::get<int>(default_value));
         } else if (std::holds_alternative<std::string>(default_value)) {
             result[name] = string_handler(name, std::get<std::string>(default_value));
         } else if (std::holds_alternative<bool>(default_value)) {
             result[name] = boolean_handler(name, std::get<bool>(default_value));
+        } else if (std::holds_alternative<double>(default_value)) {
+            result[name] = double_handler(name, std::get<double>(default_value));
         }
     }
     
@@ -52,14 +57,14 @@ std::map<std::string, std::variant<double, std::string, bool>> actOnBlackboardMa
 
 class Fase1FSM : public fsm::FSM {
 public:
-    Fase1FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision, const std::map<std::string, std::variant<double, std::string, bool>>& parameters) : fsm::FSM({"ERROR", "FINISHED"}){
+    Fase1FSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision, const std::map<std::string, std::variant<int, std::string, bool, double>>& parameters) : fsm::FSM({"ERROR", "FINISHED"}){
         this->blackboard_set<std::shared_ptr<Drone>>("drone", drone);
         this->blackboard_set<std::shared_ptr<VisionNode>>("vision", vision);
         
         actOnBlackboardMap(
             parameters,
-            [this](const std::string& name, double value) -> double {
-                this->blackboard_set<float>(name, static_cast<float>(value));
+            [this](const std::string& name, int value) -> int {
+                this->blackboard_set<int>(name, value);
                 return value;
             },
             [this](const std::string& name, const std::string& value) -> std::string {
@@ -69,11 +74,17 @@ public:
             [this](const std::string& name, bool value) -> bool {
                 this->blackboard_set<bool>(name, value);
                 return value;
+            },
+            [this](const std::string& name, double value) -> double {
+                this->blackboard_set<float>(name, static_cast<float>(value));
+                return value;
             }
         );
 
-        std::vector<ArenaPoint> waypoints = this->config_waypoints('A', 'C');
+        std::vector<ArenaPoint> waypoints = this->config_waypoints('A', 'E');
         this->blackboard_set<std::vector<ArenaPoint>>("waypoints", waypoints);
+
+        this->blackboard_set<std::shared_ptr<GPSpos>>("last_gps", std::make_shared<GPSpos>(EMPTY_GPS));
 
         this->add_state("ARMING", std::make_unique<ArmingState>());
         this->add_state("TAKEOFF", std::make_unique<TakeoffState>());
@@ -104,7 +115,7 @@ public:
 
         this->add_transitions("SEARCH BASE", {
             {"BASE DETECTED", "ALIGN WITH BASE"},
-            {"SEARCH ENDED", "LANDING"},
+            {"SEARCH ENDED", "RETURN HOME"},
             {"SEG FAULT", "ERROR"}
         });
 
@@ -128,8 +139,6 @@ public:
 
 private:
     std::vector<ArenaPoint> config_waypoints(char alpha, char omega){
-        // Atenção! Use somente chars maiusculos. Eg: A, B, C, D, ...
-
         std::vector<ArenaPoint> waypoints;
 
         // Origem
@@ -139,15 +148,24 @@ private:
         
         waypoints.push_back(ArenaPoint("Origin", x, y, h));
 
-        // Outros pontos:
-        for(char c = alpha; c<=omega; c++){
-            std::string char_str(1, c);  // Fix: create string from char
+        // Pontos de A até E
+        for(char c = alpha; c <= omega; c++){
+            std::string char_str(1, c);
             std::string wp_char = "wp_"+char_str+"_";
-            x = *this->blackboard_get<float>(wp_char+"x");
-            y = *this->blackboard_get<float>(wp_char+"y");
             
-            waypoints.push_back(ArenaPoint(char_str, x, y, h));
+            try {
+                x = *this->blackboard_get<float>(wp_char+"x");
+                y = *this->blackboard_get<float>(wp_char+"y");
+                waypoints.push_back(ArenaPoint(char_str, x, y, h));
+            } catch (...) {
+                // Se não encontrar o parâmetro, pula para o próximo
+                continue;
+            }
         }
+
+        int pos_last = waypoints.size() - 1;
+
+        this->blackboard_set<Eigen::Vector3d>("vetor_avanco", waypoints[pos_last].coord - waypoints[0].coord);
 
         return waypoints;
     }
@@ -161,17 +179,18 @@ private:
     rclcpp::TimerBase::SharedPtr timer_;
 
 public:
-    NodeFSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision) : rclcpp::Node("fase1_fsm"), drone_node_(drone), vision_node_(vision) {
+    NodeFSM(std::shared_ptr<Drone> drone, std::shared_ptr<VisionNode> vision) : rclcpp::Node("fase4_fsm"), drone_node_(drone), vision_node_(vision) {
         // Parâmetros alinhados com fsm.yaml (fase4_fsm.ros__parameters)
-        std::map<std::string, std::variant<double, std::string, bool>> defaults = {
+        std::map<std::string, std::variant<int, std::string, bool, double>> defaults = {
             // Home position parameters
             {"fictual_home_x", 0.0},
             {"fictual_home_y", 0.0},
             {"fictual_home_z", 0.0}, // z aponta para baixo
 
-            {"fig_count", 0.0}, // contador de figuras detectadas (changed to double)
-            {"max_number_of_bases", 6.0}, // número máximo de bases a serem detectadas (changed to double)
-            
+            {"fig_count", 0}, // contador de figuras detectadas
+            {"max_number_of_bases", 6}, // número máximo de bases a serem detectadas
+            {"min_distance_between_bases", 3.0}, // distância mínima entre bases para contagem de novas bases
+
             {"position_tolerance", 0.1}, // tolerância para alinhamento com a base
             {"timeout_duration", 10.0}, // timeout para alinhamento com a base
 
@@ -190,20 +209,23 @@ public:
             {"pid_pos_kd", 0.5},
             {"setpoint", 0.0},
 
-            // Pontos waypoints
-            {"wp_A_x", -4.0},
-            {"wp_A_y", 0.0},
-            {"wp_B_x", -4.0},
-            {"wp_B_y", 4.0},
-            {"wp_C_x", 0.0},
-            {"wp_C_y", 4.0}
+            // Pontos waypoints - Padrão básico de varredura
+            // A=(-a, 0), B=(-a, b), C=(a, b), D=(a, 2b), E=(0, 2b)
+            // Valores alinhados com fsm.yaml (area_half_width = 5.0)
+            {"max_path_incrementos", 2},
+            {"wp_A_x", -5.0}, {"wp_A_y", 0.0},
+            {"wp_B_x", -5.0}, {"wp_B_y", 1.0},
+            {"wp_C_x", 5.0}, {"wp_C_y", 1.0},
+            {"wp_D_x", 5.0}, {"wp_D_y", 2.0},
+            {"wp_E_x", 0.0}, {"wp_E_y", 2.0}
         };
 
         auto parameters = actOnBlackboardMap(
             defaults,
-            [this](const std::string& name, double default_value) -> double {
+
+            [this](const std::string& name, int default_value) -> int {
                 this->declare_parameter(name, default_value);
-                return this->get_parameter(name).as_double();
+                return this->get_parameter(name).as_int();
             },
             [this](const std::string& name, const std::string& default_value) -> std::string {
                 this->declare_parameter(name, default_value);
@@ -212,6 +234,10 @@ public:
             [this](const std::string& name, bool default_value) -> bool {
                 this->declare_parameter(name, default_value);
                 return this->get_parameter(name).as_bool();
+            },
+            [this](const std::string& name, double default_value) -> double {
+                this->declare_parameter(name, default_value);
+                return this->get_parameter(name).as_double();
             }
         );
 

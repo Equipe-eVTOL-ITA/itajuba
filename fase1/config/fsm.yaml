@@ -1,5 +1,10 @@
 fase4_fsm:
   ros__parameters:
+    # Configuração de área - Para alterar o tamanho, modifique estes valores:
+    # area_half_width = 5.0 (metade da largura da área)
+    # line_advance = 1.0 (avanço por linha)
+    # double_line_advance = 2.0 (2 * line_advance)
+
     # Home position parameter
     fictual_home_x: 0.0
     fictual_home_y: 0.0
@@ -7,12 +12,13 @@ fase4_fsm:
 
     fig_count: 0
     max_number_of_bases: 6
+    min_distance_between_bases: 2.0
 
     position_tolerance: 0.1
     timeout_duration: 10.0
 
     # Takeoff parameters
-    takeoff_height: -1.5
+    takeoff_height: -2.0
     max_vertical_velocity: 0.5
     initial_takeoff_taken: false
 
@@ -26,15 +32,28 @@ fase4_fsm:
     pid_pos_kd: 0.5
     setpoint: 0.0
 
-    # Pontos_waypoints
-    wp_A_x: -4.0
-    wp_A_y: 0.0
+    # Pontos_waypoints - Padrão básico de varredura
+    # Origem (0,0) onde o drone spawna
+    # A=(-a, 0), B=(-a, b), C=(a, b), D=(a, 2b), E=(0, 2b)
+    # Para alterar área: modifique 5.0 para área_half_width desejada
+    # Para alterar avanço: modifique 1.0 e 2.0 conforme necessário
+    
+    max_path_incrementos: 3
 
-    wp_B_x: -4.0
-    wp_B_y: 4.0
-
-    wp_C_x: 0.0
-    wp_C_y: 4.0
+    wp_A_x: -2.0   # -area_half_width (limite esquerdo)
+    wp_A_y: 0.0    # Alinhado com origem
+    
+    wp_B_x: -2.0   # -area_half_width (ainda no limite esquerdo)
+    wp_B_y: 1.0    # line_advance (um pouco para frente)
+    
+    wp_C_x: 2.0    # area_half_width (limite direito)
+    wp_C_y: 1.0    # line_advance (mesmo y do ponto B)
+    
+    wp_D_x: 2.0    # area_half_width (ainda no limite direito)
+    wp_D_y: 2.0    # double_line_advance (mais um pouco para frente)
+    
+    wp_E_x: 0.0    # Alinhado com origem
+    wp_E_y: 2.0    # double_line_advance (mesmo y do ponto D)
 
 fase4_vision:
   ros__parameters:

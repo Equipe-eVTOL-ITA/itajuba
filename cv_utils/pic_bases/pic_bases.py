@@ -15,7 +15,7 @@ class PicBasesNode(Node):
     def __init__(self):
         super().__init__('pic_bases')
         
-        self.declare_parameter('save_folder', '/tmp/bases_detected')
+        self.declare_parameter('save_folder', './src/itajuba/cv_utils/pic_bases/bases_detected_fase1')
         self.save_folder = self.get_parameter('save_folder').get_parameter_value().string_value
         os.makedirs(self.save_folder, exist_ok=True)
         self.get_logger().info(f'Salvando as imagens em: {self.save_folder}')
@@ -50,7 +50,7 @@ class PicBasesNode(Node):
             GlobalPositionMsg,
             '/current_gps_position',
             self.gps_callback,
-            QoSProfile(depth=10, reliability=ReliabilityPolicy.RELIABLE)
+            QoSProfile(depth=10, reliability=ReliabilityPolicy.BEST_EFFORT)
         )
 
         self.current_gps = GPS_Pos()
@@ -81,10 +81,14 @@ class PicBasesNode(Node):
             return
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        info_text = f"Base #{self.count} - {timestamp} - GPS: {self.current_gps.lat:.6f}, {self.current_gps.lon:.6f}, Alt: {self.current_gps.alt:.2f}m"
+        info_text = f"Base #{self.count} - {timestamp}"
         cv2.putText(self.image, info_text, (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2)
         
+        info_text = f"GPS: {self.current_gps.lat:.6f}, {self.current_gps.lon:.6f}, Alt: {self.current_gps.alt:.2f}m"
+        cv2.putText(self.image, info_text, (10, 70),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+
         # Salvar imagem com nome único
         filename = f"base_{self.count:03d}_{timestamp}.jpg"
         filepath = os.path.join(self.save_folder, filename)
