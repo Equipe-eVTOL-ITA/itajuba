@@ -2,29 +2,29 @@ Fase3 Color Detector — Parâmetros carregados
 ================================================
 
 [casa]
-  H: 10..25
-  S: 100..255
-  V: 100..255
+  H: 0..14
+  S: 108..174
+  V: 159..193
 
 [circulo]
-  H: 100..130
-  S: 100..255
-  V: 120..255
+  H: 109..124
+  S: 37..153
+  V: 139..234
 
 [cruz]
-  H: 140..170
-  S: 80..255
-  V: 80..255
+  H: 143..158
+  S: 90..136
+  V: 121..151
 
 [estrela]
-  H: 40..80
-  S: 100..255
-  V: 50..255
+  H: 54..69
+  S: 83..149
+  V: 111..158
 
 [hexagono]
-  H: 0..10
-  S: 100..255
-  V: 120..255
+  H: 0..9
+  S: 66..201
+  V: 133..255
 
 [hexagono2]
   H: 170..180
@@ -32,14 +32,14 @@ Fase3 Color Detector — Parâmetros carregados
   V: 120..255
 
 [pentagono]
-  H: 0..10
-  S: 38..174
-  V: 76..174
+  H: 0..13
+  S: 23..152
+  V: 116..158
 
 [quadrado]
-  H: 0..180
-  S: 0..255
-  V: 0..50
+  H: 0..151
+  S: 22..68
+  V: 75..114
 
 [quadrado2]
   H: 10..30
@@ -47,9 +47,9 @@ Fase3 Color Detector — Parâmetros carregados
   V: 30..120
 
 [triangulo]
-  H: 100..130
-  S: 100..255
-  V: 50..120
+  H: 116..131
+  S: 69..99
+  V: 85..115
 
 Restrições de detecção:
   Min Pad Area: 300

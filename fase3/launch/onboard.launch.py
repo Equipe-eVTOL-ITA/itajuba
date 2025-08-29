@@ -42,7 +42,7 @@ def generate_launch_description():
     # Camera node
     camera_node = Node(
         package='camera_publisher',
-        executable='oak',
+        executable='webcam',
         parameters=[onboard_params],
         output='screen'
     )
@@ -67,8 +67,8 @@ def generate_launch_description():
     return LaunchDescription([
         exec_arg,
         system_health_node,
-        telemetry_recorder_node,        
-        #camera_node,
+        telemetry_recorder_node,
+        camera_node,
         base_detector_node,
         delayed_fsm_node
     ])
