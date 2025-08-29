@@ -46,10 +46,10 @@ fase3_vision:
 
     # ===== Choose ONE way to set intrinsics =====
     # A) If you calibrated the RESIZED stream (recommended), set fx/fy/cx/cy directly:
-    fx: 0.0            # e.g., 735.2
-    fy: 0.0            # e.g., 735.0
-    cx: 0.0            # e.g., 400.0 for 800x800
-    cy: 0.0
+    fx: 817.399115
+    fy: 1088.88289
+    cx: 435.704031
+    cy: 387.858729
 
     # B) Otherwise, set original camera size and HFOV. The code will model the center crop and resize.
     camera_horizontal_fov: 1.047      # ~60 deg

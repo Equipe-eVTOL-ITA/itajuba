@@ -45,7 +45,7 @@ public:
             auto bboxes = this->vision->getDetections();
 
             for (const auto& bbox : bboxes) {
-                const Eigen::Vector3d approx_base = this->vision->getAccurateBase(this->pos, this->orientation, bbox);
+                const Eigen::Vector3d approx_base = this->vision->getApproximateBase(this->pos, this->orientation, bbox, this->mean_base_height);
                 std::string detected_shape = bbox.class_id;  // Get the detected shape/color
                 bool is_visited_shape = false;
                 bool is_target_shape = false;

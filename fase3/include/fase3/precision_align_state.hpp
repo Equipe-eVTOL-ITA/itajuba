@@ -71,7 +71,7 @@ public:
             
             this->no_detection_counter = 0;
             auto bbox = this->vision->getClosestBbox();
-            this->approx_base = this->vision->getAccurateBase(this->pos, this-> orientation, bbox);
+            this->approx_base = this->vision->getApproximateBase(this->pos, this-> orientation, bbox, this->mean_base_height);
             this->horizontal_distance = (approx_base.head<2>() - this->pos.head<2>()).norm();
 
             this->vision->publishBaseDetection("detected_base", approx_base); 
