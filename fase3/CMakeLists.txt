@@ -44,11 +44,32 @@ ament_target_dependencies(fase3
 
 target_link_libraries(fase3 ${OpenCV_LIBS})
 
+#fase3_tester
+
+add_executable(fase3_tester
+  src/fase3_tester.cpp
+)
+
+ament_target_dependencies(fase3_tester
+  rclcpp
+  fsm
+  itajuba_drone_lib
+  custom_msgs
+  Eigen3
+  vision_msgs
+  sensor_msgs
+  visualization_msgs
+  cv_bridge
+)
+
+target_link_libraries(fase3_tester ${OpenCV_LIBS})
+
 #Install
 
 install(
   TARGETS
     fase3
+    fase3_tester
   DESTINATION lib/${PROJECT_NAME}
 )
 
