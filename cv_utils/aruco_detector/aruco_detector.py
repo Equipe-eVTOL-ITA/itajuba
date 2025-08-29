@@ -38,17 +38,18 @@ class ArucoDetector(Node):
             self.aruco_params = cv2.aruco.DetectorParameters_create()
             self.use_new_api = False
 
-        # self.calibrate_camera_real()  # Para uso com câmera real
-        self.calibrate_camera_sim()     # Para uso em simulação
+        self.calibrate_camera_real()  # Para uso com câmera real
+        # self.calibrate_camera_sim()     # Para uso em simulação
 
 
 
     def calibrate_camera_real(self):
         # Parâmetros reais (exemplo, troque pelos calibrados da sua câmera física)
-        self.camera_matrix = np.array([[921.1707, 0, 459.9043],
-                                       [0, 919.0183, 351.2383],
-                                       [0, 0, 1]])
-        self.dist_coeffs = np.array([-0.033458, 0.105152, 0.001256, -0.004597, 0])
+        self.camera_matrix = np.array([[8.17399115e+02, 0.00000000e+00, 4.35704031e+02],
+ [0.00000000e+00, 1.08888289e+03, 3.87858729e+02],
+ [0.00000000e+00, 0.00000000e+00, 1.00000000e+00]])
+        self.dist_coeffs = np.array([-3.48057797e-01, -3.72127368e-01,  1.28985034e-03, -2.47201674e-05,
+  3.55441543e+00])
 
     def calibrate_camera_sim(self):
         # Parâmetros ideais para simulação (sem distorção)
