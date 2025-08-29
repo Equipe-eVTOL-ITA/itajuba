@@ -37,8 +37,8 @@ setup(
             'fase3_color_detector = fase3.fase3_color_detector:main',  # Added color detector
             'base_detector = base_detector.base_detector:main',
             'lane_detector = lane_detector.lane_detector:main',
-            'pic_bases = pic_bases.pic_bases:main'
-                    #  pasta       arquvivo.py  funcao no arquivo
+            'pic_bases = pic_bases.pic_bases:main',
+            'calib_hsv = calibration_hsv.calibration_hsv:main'
         ],
     }
 )

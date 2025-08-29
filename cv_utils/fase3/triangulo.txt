@@ -1,0 +1,33 @@
+=== HSV Calibration Results ===
+
+Timestamp: 1756429611865106544
+Number of samples: 13
+
+Raw sample data (H, S, V):
+  Sample 1: [122, 89, 101]
+  Sample 2: [122, 85, 107]
+  Sample 3: [124, 95, 88]
+  Sample 4: [124, 84, 99]
+  Sample 5: [124, 83, 98]
+  Sample 6: [124, 79, 99]
+  Sample 7: [125, 78, 101]
+  Sample 8: [123, 82, 96]
+  Sample 9: [124, 88, 105]
+  Sample 10: [124, 85, 106]
+  Sample 11: [124, 88, 106]
+  Sample 12: [125, 88, 99]
+  Sample 13: [124, 79, 99]
+
+Calculated HSV ranges:
+  Lower bound: [116, 69, 85]
+  Upper bound: [131, 99, 115]
+
+Code snippets for use:
+Python/OpenCV:
+  lower_hsv = np.array([116, 69, 85])
+  upper_hsv = np.array([131, 99, 115])
+  mask = cv2.inRange(hsv_image, lower_hsv, upper_hsv)
+
+YAML format:
+  hsv_lower: [116, 69, 85]
+  hsv_upper: [131, 99, 115]

@@ -1,0 +1,60 @@
+Fase3 Color Detector — Parâmetros carregados
+================================================
+
+[casa]
+  H: 10..25
+  S: 100..255
+  V: 100..255
+
+[circulo]
+  H: 100..130
+  S: 100..255
+  V: 120..255
+
+[cruz]
+  H: 140..170
+  S: 80..255
+  V: 80..255
+
+[estrela]
+  H: 40..80
+  S: 100..255
+  V: 50..255
+
+[hexagono]
+  H: 0..10
+  S: 100..255
+  V: 120..255
+
+[hexagono2]
+  H: 170..180
+  S: 100..255
+  V: 120..255
+
+[pentagono]
+  H: 0..10
+  S: 38..174
+  V: 76..174
+
+[quadrado]
+  H: 0..180
+  S: 0..255
+  V: 0..50
+
+[quadrado2]
+  H: 10..30
+  S: 100..255
+  V: 30..120
+
+[triangulo]
+  H: 100..130
+  S: 100..255
+  V: 50..120
+
+Restrições de detecção:
+  Min Pad Area: 300
+  Max Pad Area: 120000
+  Min Aspect Ratio: 0.7
+  Max Aspect Ratio: 1.3
+  Morph Kernel: 5
+  Morph Iterations: 2
