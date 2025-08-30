@@ -16,26 +16,20 @@ public:
         if (this->vision == nullptr || this->drone == nullptr) return;
 
         this->drone->log("");
-        this->drone->log("STATE: LANDING");
+        this->drone->log("STATE: SIMULATED LANDING (Fase1 - No actual landing)");
 
-        this->v_max = *blackboard.get<float>("landing_velocity_max");
-        this->v_min = *blackboard.get<float>("landing_velocity_min");
-        float align_height = *blackboard.get<float>("align_height"); // Already negative in NED
-        float max_base_height = *blackboard.get<float>("max_base_height"); // Ground level = 0.0
-
-        // Distance from align height to ground (positive distance down)
-        float descent_distance = max_base_height - align_height;  // 0.0 - (-2.0) = 2.0 meters
-        
-        this->time_constant = (this->v_max - this->v_min) / descent_distance;
-
-        double TempoBase = (1/this->time_constant) * std::log(this->v_max/this->v_min);
-        double TempoTotal = TempoBase + descent_distance / this->v_min;
-        this->timeout_ = TempoTotal + 1.0;
+        // For fase1, we just simulate a quick landing without actually descending
+        this->timeout_ = 2.0;  // Quick 2-second simulation
         this->start_time_ = std::chrono::steady_clock::now();
+        
+        // Store the position and orientation when entering the state
+        this->target_position_ = this->drone->getLocalPosition();
+        this->target_orientation_ = this->drone->getOrientation();
 
-
-        this->drone->log("Tempo até a Base: " + std::to_string(TempoBase) + " s");
-        this->drone->log("Tempo total de pouso: " + std::to_string(TempoTotal) + " s");
+        this->drone->log("Simulating landing for 2 seconds...");
+        this->drone->log("Maintaining position: " + std::to_string(this->target_position_.x()) + 
+                        ", " + std::to_string(this->target_position_.y()) + 
+                        ", " + std::to_string(this->target_position_.z()));
     }
     std::string act(fsm::Blackboard &blackboard) override {
         (void) blackboard;
@@ -43,15 +37,15 @@ public:
         auto current_time = std::chrono::steady_clock::now();
         auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(current_time - this->start_time_).count();
 
-        float velocity = this->v_max * std::exp(-this->time_constant * elapsed_time);
-
-        velocity = std::clamp(velocity, this->v_min, this->v_max);
+        // For fase1, maintain the fixed position from when we entered the state
+        this->drone->setLocalPosition(this->target_position_.x(), 
+                                     this->target_position_.y(), 
+                                     this->target_position_.z(), 
+                                     this->target_orientation_.z());
 
         if (elapsed_time > this->timeout_){
             return "LANDED";
         }
-
-        this->drone->setLocalVelocity(0.0, 0.0, velocity, 0.0);
 
         return "";
     }
@@ -104,4 +98,8 @@ private:
     float time_constant;
     float timeout_;
     std::chrono::steady_clock::time_point start_time_;
+    
+    // Store the target position and orientation to maintain
+    Eigen::Vector3d target_position_;
+    Eigen::Vector3d target_orientation_;
 };
