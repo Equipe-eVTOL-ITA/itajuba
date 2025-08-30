@@ -22,84 +22,84 @@ fase3_color_detector:
     light_debug_quality: 75  # JPEG compression quality (75% for good quality/size balance)
     
     circulo:
-      hue_lower: 109
-      hue_upper: 124
-      saturation_lower: 37
-      saturation_upper: 153
-      value_lower: 139
-      value_upper: 234
+      hue_lower: 117  # Calibrated from circulo.txt
+      hue_upper: 132  # Calibrated from circulo.txt
+      saturation_lower: 100  # Calibrated from circulo.txt
+      saturation_upper: 189  # Calibrated from circulo.txt
+      value_lower: 234  # Calibrated from circulo.txt
+      value_upper: 255  # Calibrated from circulo.txt
 
     triangulo:
-      hue_lower: 116
-      hue_upper: 131
-      saturation_lower: 69
-      saturation_upper: 99
-      value_lower: 85
-      value_upper: 115
+      hue_lower: 108  # Calibrated from triangulo.txt
+      hue_upper: 123  # Calibrated from triangulo.txt
+      saturation_lower: 105  # Calibrated from triangulo.txt
+      saturation_upper: 225  # Calibrated from triangulo.txt
+      value_lower: 91  # Calibrated from triangulo.txt
+      value_upper: 255  # Calibrated from triangulo.txt
 
     hexagono:
-      hue_lower: 0
-      hue_upper: 9
-      saturation_lower: 66
-      saturation_upper: 201
-      value_lower: 133
-      value_upper: 255
+      hue_lower: 0  # Calibrated from hexagono.txt
+      hue_upper: 179  # Calibrated from hexagono.txt
+      saturation_lower: 120  # Calibrated from hexagono.txt
+      saturation_upper: 167  # Calibrated from hexagono.txt
+      value_lower: 239  # Calibrated from hexagono.txt
+      value_upper: 255  # Calibrated from hexagono.txt
 
-    hexagono2: # Para wrap-around do vermelho
-      hue_lower: 170
-      hue_upper: 180
-      saturation_lower: 100
-      saturation_upper: 255
-      value_lower: 120
-      value_upper: 255
+    hexagono2: # Para wrap-around do vermelho - DISABLED
+      hue_lower: 0
+      hue_upper: 0
+      saturation_lower: 0
+      saturation_upper: 0
+      value_lower: 0
+      value_upper: 0
 
     pentagono:
-      hue_lower: 0
-      hue_upper: 13
-      saturation_lower: 23
-      saturation_upper: 152
-      value_lower: 116
-      value_upper: 158
+      hue_lower: 150  # Calibrated from pentagono.txt
+      hue_upper: 190  # Calibrated from pentagono.txt
+      saturation_lower: 90  # Calibrated from pentagono.txt
+      saturation_upper: 190  # Calibrated from pentagono.txt
+      value_lower: 139  # Calibrated from pentagono.txt
+      value_upper: 200  # Calibrated from pentagono.txt
 
     estrela:
-      hue_lower: 40
-      hue_upper: 80
-      saturation_lower: 100
-      saturation_upper: 255
-      value_lower: 50
-      value_upper: 255
+      hue_lower: 43  # Calibrated from estrela.txt
+      hue_upper: 62  # Calibrated from estrela.txt
+      saturation_lower: 22  # Calibrated from estrela.txt
+      saturation_upper: 231  # Calibrated from estrela.txt
+      value_lower: 121  # Calibrated from estrela.txt
+      value_upper: 183  # Calibrated from estrela.txt
 
     cruz:
-      hue_lower: 143
-      hue_upper: 158
-      saturation_lower: 90
-      saturation_upper: 136
-      value_lower: 121
-      value_upper: 151
+      hue_lower: 145  # Calibrated from cruz.txt
+      hue_upper: 160  # Calibrated from cruz.txt
+      saturation_lower: 82  # Calibrated from cruz.txt
+      saturation_upper: 182  # Calibrated from cruz.txt
+      value_lower: 158  # Calibrated from cruz.txt
+      value_upper: 218  # Calibrated from cruz.txt
 
     casa:
-      hue_lower: 0
-      hue_upper: 14
-      saturation_lower: 108
-      saturation_upper: 174
-      value_lower: 159
-      value_upper: 193
+      hue_lower: 3  # Calibrated from casa.txt
+      hue_upper: 18  # Calibrated from casa.txt
+      saturation_lower: 35  # Calibrated from casa.txt
+      saturation_upper: 186  # Calibrated from casa.txt
+      value_lower: 153  # Calibrated from casa.txt
+      value_upper: 255  # Calibrated from casa.txt
 
     quadrado:
-      hue_lower: 0
-      hue_upper: 151
-      saturation_lower: 22
-      saturation_upper: 68
-      value_lower: 75
-      value_upper: 114
+      hue_lower: 106  # Calibrated from quadrado.txt
+      hue_upper: 146  # Calibrated from quadrado.txt
+      saturation_lower: 0  # Calibrated from quadrado.txt
+      saturation_upper: 169  # Calibrated from quadrado.txt
+      value_lower: 39  # Calibrated from quadrado.txt
+      value_upper: 164  # Calibrated from quadrado.txt
 
     quadrado2:
       hue_lower: 10
       hue_upper: 30
-      saturation_lower: 100
-      saturation_upper: 255
-      value_lower: 30
-      value_upper: 120
+      saturation_lower: 90  # 100 - 10% = 90
+      saturation_upper: 255  # 255 + 10% = 280.5, capped at 255
+      value_lower: 27  # 30 - 10% = 27
+      value_upper: 132  # 120 + 10% = 132
 
 telemetry_recorder:
   ros__parameters:

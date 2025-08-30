@@ -1,6 +1,9 @@
 #include <Eigen/Eigen>
 #include <iostream>
 #include <vector>
+#include <limits>
+#include <map>
+#include <string>
 #include "fsm/fsm.hpp"
 #include "Base.hpp"
 #include "ArenaPoint.hpp"
@@ -25,6 +28,9 @@ public:
         this->target_shapes = blackboard.get<std::vector<std::string>>("target_shapes");
 
         this->print_counter = 0;
+        this->detection_counters.clear();
+        this->detection_positions.clear();
+        this->detection_shapes.clear();
 
         this->position_tolerance = *blackboard.get<float>("position_tolerance");
         this->initial_yaw = 0.0f;
@@ -43,12 +49,24 @@ public:
 
         if (this->vision->isThereDetection()) {
             auto bboxes = this->vision->getDetections();
+            
+            // Track current detections in this frame
+            std::vector<std::string> current_frame_detections;
 
             for (const auto& bbox : bboxes) {
                 const Eigen::Vector3d approx_base = this->vision->getApproximateBase(this->pos, this->orientation, bbox, this->mean_base_height);
                 std::string detected_shape = bbox.class_id;  // Get the detected shape/color
-                bool is_visited_shape = false;
+                bool is_known_base = false;
                 bool is_target_shape = false;
+                float min_horizontal_distance = std::numeric_limits<float>::max();
+                
+                // Publish base detection to telemetry
+                this->vision->publishBaseDetection("detected_base", approx_base); 
+                
+                if (this->print_counter % 5 == 0) {
+                    this->drone->log("");
+                    this->drone->log("Estimate: {" + std::to_string(approx_base.x()) + ", " + std::to_string(approx_base.y()) + "}");
+                }
                 
                 // Check if this shape is in our target list
                 if (this->target_shapes != nullptr) {
@@ -69,38 +87,88 @@ public:
                     }
                     continue;  // Skip shapes not in target list
                 }
-                
-                // Publish base detection to telemetry
-                this->vision->publishBaseDetection("detected_base", approx_base); 
-                
-                if (this->print_counter % 5 == 0) {
-                    this->drone->log("");
-                    this->drone->log("Detected target shape: " + detected_shape + " at: {" + std::to_string(approx_base.x()) + ", " + std::to_string(approx_base.y()) + "}");
-                }
 
-                // Check if we've already landed on this shape/color
+                // Check if detection is within radius of any known base
                 for (const auto& base : *this->bases) {
-                    if (base.shape_class == detected_shape && base.is_visited) {
+                    float horizontal_distance = (approx_base.head<2>() - base.coordinates.head<2>()).norm();
+
+                    min_horizontal_distance = std::min(min_horizontal_distance, horizontal_distance);
+                    
+                    if (this->print_counter % 5 == 0) {
+                        std::string base_index = std::to_string(&base - &(*this->bases)[0]);
+                        this->drone->log("Dist " + std::to_string(horizontal_distance) + " to Base {" + base_index + "}: {"
+                                    + std::to_string(base.coordinates[0]) + ", " + std::to_string(base.coordinates[1]) + "}");
+                    }
+                    
+                    if (horizontal_distance < this->known_base_radius) {
                         if (this->print_counter % 5 == 0) {
-                            this->drone->log("Already landed on shape: " + detected_shape + " - skipping!");
+                            this->drone->log("Known base within radius!");
                         }
-                        is_visited_shape = true;
+                        is_known_base = true;
                         break;
                     }
                 }
 
-                // Only proceed if we haven't landed on this shape before
-                if (!is_visited_shape) {
-                    this->drone->log("");
-                    this->drone->log("New target shape: " + detected_shape + " at: {" + std::to_string(approx_base.x()) + ", " + std::to_string(approx_base.y()) + "}");
+                // Only proceed if this is NOT a known base (new base detected)
+                if (!is_known_base) {
+                    // Create unique key for this detection (position + shape)
+                    Eigen::Vector2d current_detection_pos = approx_base.head<2>();
+                    std::string detection_key = this->createDetectionKey(current_detection_pos, detected_shape);
                     
-                    // Publish first detection as yellow marker
-                    this->vision->publishBaseDetection("first_estimate_base", approx_base); 
+                    // Add to current frame detections
+                    current_frame_detections.push_back(detection_key);
                     
-                    blackboard.set<Eigen::Vector3d>("approximate_base", approx_base);
-                    blackboard.set<std::string>("target_shape", detected_shape);  // Store the target shape
-                    return "BASE FOUND";
+                    // Check if this detection already exists (within 2m radius)
+                    std::string existing_key = this->findExistingDetection(current_detection_pos, detected_shape);
+                    
+                    if (!existing_key.empty()) {
+                        // Update existing detection
+                        this->detection_counters[existing_key]++;
+                        if (this->print_counter % 10 == 0) {
+                            this->drone->log("Updating detection: " + detected_shape + 
+                                           " (" + std::to_string(this->detection_counters[existing_key]) + "/50 detections)");
+                        }
+                        
+                        // Check if this detection reached 50 counts
+                        if (this->detection_counters[existing_key] >= 50) {
+                            this->drone->log("");
+                            this->drone->log("BASE CONFIRMED after 50 detections!");
+                            this->drone->log("New base at: {" + std::to_string(approx_base.x()) + ", " + 
+                                           std::to_string(approx_base.y()) + "}");
+                            this->drone->log("Target shape: " + detected_shape);
+                            this->drone->log("Min distance to known base: " + std::to_string(min_horizontal_distance));
+                            
+                            // Publish first detection as yellow marker
+                            this->vision->publishBaseDetection("first_estimate_base", approx_base); 
+                            
+                            blackboard.set<Eigen::Vector3d>("approximate_base", approx_base);
+                            blackboard.set<std::string>("target_shape", detected_shape);  // Store the target shape
+                            return "BASE FOUND";
+                        }
+                    } else {
+                        // New detection
+                        this->detection_counters[detection_key] = 1;
+                        this->detection_positions[detection_key] = current_detection_pos;
+                        this->detection_shapes[detection_key] = detected_shape;
+                        this->drone->log("New base detected at: {" + std::to_string(approx_base.x()) + ", " + 
+                                       std::to_string(approx_base.y()) + "} - starting counter (1/50)");
+                        this->drone->log("Shape: " + detected_shape);
+                        this->drone->log("Min distance to known base: " + std::to_string(min_horizontal_distance));
+                    }
                 }
+            }
+            
+            // Clean up detections that weren't seen in this frame (reset their counters)
+            this->cleanupMissedDetections(current_frame_detections);
+        } else {
+            // Reset all counters if no detection
+            if (!this->detection_counters.empty()) {
+                if (this->print_counter % 10 == 0) {
+                    this->drone->log("No detection - resetting all counters");
+                }
+                this->detection_counters.clear();
+                this->detection_positions.clear();
+                this->detection_shapes.clear();
             }
         } 
 
@@ -167,6 +235,11 @@ private:
     float max_velocity;
 
     int print_counter;
+    
+    // Multiple detection tracking
+    std::map<std::string, int> detection_counters;          // detection_key -> count
+    std::map<std::string, Eigen::Vector2d> detection_positions;  // detection_key -> position
+    std::map<std::string, std::string> detection_shapes;    // detection_key -> shape
 
     float known_base_radius;
     float height_to_ground;
@@ -183,5 +256,47 @@ private:
         }
         // Return nullptr if no unvisited points are found
         return nullptr;
+    }
+    
+    // Helper functions for multiple detection tracking
+    std::string createDetectionKey(const Eigen::Vector2d& position, const std::string& shape) {
+        return std::to_string(static_cast<int>(position.x() * 10)) + "_" + 
+               std::to_string(static_cast<int>(position.y() * 10)) + "_" + shape;
+    }
+    
+    std::string findExistingDetection(const Eigen::Vector2d& position, const std::string& shape) {
+        for (const auto& pair : this->detection_positions) {
+            if (this->detection_shapes[pair.first] == shape &&
+                (pair.second - position).norm() < 2.0) {  // Within 2m radius
+                return pair.first;
+            }
+        }
+        return "";  // Not found
+    }
+    
+    void cleanupMissedDetections(const std::vector<std::string>& current_detections) {
+        // Remove detections that weren't seen in this frame
+        auto it = this->detection_counters.begin();
+        while (it != this->detection_counters.end()) {
+            bool found_in_current_frame = false;
+            for (const auto& current_key : current_detections) {
+                if (this->findExistingDetection(this->detection_positions[it->first], 
+                                              this->detection_shapes[it->first]) == it->first) {
+                    found_in_current_frame = true;
+                    break;
+                }
+            }
+            
+            if (!found_in_current_frame) {
+                if (this->print_counter % 15 == 0) {
+                    this->drone->log("Removing missed detection: " + this->detection_shapes[it->first]);
+                }
+                this->detection_positions.erase(it->first);
+                this->detection_shapes.erase(it->first);
+                it = this->detection_counters.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
 };
