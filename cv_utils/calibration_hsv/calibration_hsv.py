@@ -60,7 +60,7 @@ class CalibratorPublisher(Node):
         print("\n=== HSV Calibração Tool ===")
         print("Instruções:")
         print("  - Pressione ENTER para capturar uma amostra de cor")
-        print("  - Pressione ESPAÇO para finalizar e calcular as faixas HSV")
+        print("  - Pressione 'a' para finalizar e calcular as faixas HSV e aguarde")
         print("  - Mire o retângulo vermelho na cor que deseja calibrar")
         print("  - Capture pelo menos 5-10 amostras para melhor precisão")
         print("  - Varie ligeiramente a posição/iluminação entre as amostras")
@@ -97,7 +97,7 @@ class CalibratorPublisher(Node):
                 else:
                     print("❌ Nenhuma imagem disponível para capturar.")
                     
-            elif user_input == ' ':
+            elif user_input == 'a':
                 if len(self.detected_colors) < 3:
                     print(f"❌ Muito poucas amostras ({len(self.detected_colors)}). Capture pelo menos 3 amostras antes de calibrar.")
                     continue
